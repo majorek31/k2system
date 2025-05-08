@@ -4,14 +4,14 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./components/landingPage";
 import NavBar from "./components/NavBar";
 
-import AboutPage from "./pages/AboutPage"
-import ContactPage from "./pages/ContactPage"
-import DeliveryPage from "./pages/DeliveryPage"
-import MainPage from "./pages/MainPage"
-import RegisterPage from "./pages/RegisterPage"
-import ServicePage from "./pages/ServicePage"
-import SettingsPage from "./pages/SettingsPage"
-import ShopPage from "./pages/ShopPage"
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import DeliveryPage from "./pages/DeliveryPage";
+import MainPage from "./pages/MainPage";
+import RegisterPage from "./pages/RegisterPage";
+import ServicePage from "./pages/ServicePage";
+import SettingsPage from "./pages/SettingsPage";
+import ShopPage from "./pages/ShopPage";
 
 function App() {
   const [scrollY, setScrollY] = useState(0);

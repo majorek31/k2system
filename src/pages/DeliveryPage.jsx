@@ -1,9 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function DeliveryPage() {
-  return (
-    <div>
-      DeliveryPAge
-    </div>
-  )
+  return <div>DeliveryPAge</div>;
 }
