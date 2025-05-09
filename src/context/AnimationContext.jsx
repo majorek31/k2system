@@ -17,7 +17,9 @@ export function AnimationProvider({ children }) {
   }, []);
 
   return (
-    <AnimationContext.Provider value={{ scrollY, setScrollY, height, setHeight }}>
+    <AnimationContext.Provider
+      value={{ scrollY, setScrollY, height, setHeight }}
+    >
       {children}
     </AnimationContext.Provider>
   );

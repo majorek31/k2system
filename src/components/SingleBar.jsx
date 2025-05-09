@@ -9,7 +9,7 @@ export default function SingleBar({
   v1,
   v2,
   children,
-  where
+  where,
 }) {
   // v1 is delay when opening a nav and v2 when closing
   const { height } = useContext(AnimationContext);
@@ -17,7 +17,7 @@ export default function SingleBar({
 
   return (
     <div
-      className={`ml-5 m-2 text-xs h-fit w-fit rounded-xl ${bGcolor} p-3 pr-7 pl-7 text-white shadow-lg transition-all duration-500 ${showContentForNav ? "translate-y-0 opacity-100" : "translate-y-[-40px] opacity-0"}`}
+      className={`m-2 ml-5 h-fit w-fit rounded-xl text-xs ${bGcolor} p-3 pr-7 pl-7 text-white shadow-lg transition-all duration-500 ${showContentForNav ? "translate-y-0 opacity-100" : "translate-y-[-40px] opacity-0"}`}
       style={{ transitionDelay: showContentForNav ? v1 : v2 }}
     >
       <Link to={where} onClick={() => window.scrollTo(0, height)}>

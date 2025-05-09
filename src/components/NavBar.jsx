@@ -10,7 +10,16 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
   const [showContentForNav, setShowContentForNav] = useState(false);
   const { scrollY, height } = useContext(AnimationContext);
   const { bGcolor } = useTheme();
-  const { mainPage, delivery, aboutUs, register, service, shop, contact, settings } = useContext(WordContext);
+  const {
+    mainPage,
+    delivery,
+    aboutUs,
+    register,
+    service,
+    shop,
+    contact,
+    settings,
+  } = useContext(WordContext);
 
   // check if navbar schould be visible
 
@@ -18,20 +27,18 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
     scrollY >= height ? setShowNavBar(true) : setShowNavBar(false),
       setShowContentForNav(false);
   }, [scrollY, height]);
-  
+
   return (
     <Fragment>
       <div
-        className={`fixed top-0 left-0 right-0 z-50 flex h-fit w-full flex-col transition-all duration-500 ease-in-out ${showNavBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}
+        className={`fixed top-0 right-0 left-0 z-50 flex h-fit w-full flex-col transition-all duration-500 ease-in-out ${showNavBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}
       >
-        <div
-          className={`mx-5 my-2 h-fit rounded-xl ${bGcolor} shadow-lg`}
-        >
+        <div className={`mx-5 my-2 h-fit rounded-xl ${bGcolor} shadow-lg`}>
           <div className="float-left flex items-center justify-center p-0">
             <img
               src="/icons/menu.svg"
               alt="menu"
-              className="object-contain brightness-0 invert filter scale-80"
+              className="scale-80 object-contain brightness-0 invert filter"
               onClick={() => setShowContentForNav(!showContentForNav)}
             />
           </div>

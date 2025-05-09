@@ -13,13 +13,11 @@ import ServicePage from "./pages/ServicePage";
 import SettingsPage from "./pages/SettingsPage";
 import ShopPage from "./pages/ShopPage";
 
-
 function App() {
   const [showNavBar, setShowNavBar] = useState(false);
 
-
   return (
-    <div className="scroll-smooth overflow-y-scroll ">
+    <div className="overflow-y-scroll scroll-smooth">
       <LandingPage />
       <BrowserRouter>
         <NavBar
