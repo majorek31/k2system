@@ -19,7 +19,7 @@ function App() {
 
 
   return (
-    <div className="scroll-smooth scroll-snap-y scroll-snap-mandatory">
+    <div className="scroll-smooth overflow-y-scroll ">
       <LandingPage />
       <BrowserRouter>
         <NavBar

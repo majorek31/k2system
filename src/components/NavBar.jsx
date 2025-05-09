@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Fragment, useEffect } from "react";
 import { useTheme } from "../hooks/useTheme";
 import { useContext } from "react";
 import { AnimationContext } from "../context/AnimationContext";
+import { WordContext } from "../context/WordContext";
 import SingleBar from "./SingleBar";
 
 export default function NavBar({ showNavBar, setShowNavBar }) {
   const [showContentForNav, setShowContentForNav] = useState(false);
   const { scrollY, height } = useContext(AnimationContext);
   const { bGcolor } = useTheme();
+  const { mainPage, delivery, aboutUs, register, service, shop, contact, settings } = useContext(WordContext);
 
   // check if navbar schould be visible
 
@@ -16,19 +18,20 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
     scrollY >= height ? setShowNavBar(true) : setShowNavBar(false),
       setShowContentForNav(false);
   }, [scrollY, height]);
+  
   return (
     <Fragment>
       <div
         className={`fixed top-0 left-0 right-0 z-50 flex h-fit w-full flex-col transition-all duration-500 ease-in-out ${showNavBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}
       >
         <div
-          className={`mx-3 my-2 h-fit rounded-xl ${bGcolor} shadow-lg`}
+          className={`mx-5 my-2 h-fit rounded-xl ${bGcolor} shadow-lg`}
         >
-          <div className="float-left flex items-center justify-center p-3">
+          <div className="float-left flex items-center justify-center p-0">
             <img
               src="/icons/menu.svg"
               alt="menu"
-              className="object-contain brightness-0 invert filter"
+              className="object-contain brightness-0 invert filter scale-80"
               onClick={() => setShowContentForNav(!showContentForNav)}
             />
           </div>
@@ -43,7 +46,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"0ms"}
             where={"/"}
           >
-            Strona Główna
+            {mainPage}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -51,7 +54,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"25ms"}
             where={"/delivery"}
           >
-            Dostawa
+            {delivery}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -59,7 +62,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"50ms"}
             where={"/about"}
           >
-            O nas
+            {aboutUs}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -67,7 +70,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"75ms"}
             where={"/register"}
           >
-            Rejestracja
+            {service}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -75,7 +78,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"100ms"}
             where={"/service"}
           >
-            Usługi
+            {register}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -83,7 +86,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"125ms"}
             where={"/shop"}
           >
-            Sklep
+            {shop}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -91,7 +94,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"150ms"}
             where={"/contact"}
           >
-            Kontakt
+            {contact}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -99,7 +102,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"175ms"}
             where={"/settings"}
           >
-            Ustawienia
+            {settings}
           </SingleBar>
         </div>
       </div>
