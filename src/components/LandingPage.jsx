@@ -1,11 +1,15 @@
 import React from "react";
 import { useEffect, useRef } from "react";
 import { useTheme } from "../hooks/useTheme";
+import { useContext } from "react";
+import { AnimationContext } from "../context/AnimationContext";
 
-export default function LandingPage({ setHeight }) {
+export default function LandingPage() {
   const boxRef = useRef(null);
 
   const { bGcolor } = useTheme();
+
+  const { setHeight } = useContext(AnimationContext);
 
   // set the height of landing page to compare later when navbar schould pop
   // it need to have the delay bc some of the content is loaded later and the height is wrong

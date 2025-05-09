@@ -13,27 +13,17 @@ import ServicePage from "./pages/ServicePage";
 import SettingsPage from "./pages/SettingsPage";
 import ShopPage from "./pages/ShopPage";
 
+
 function App() {
-  const [scrollY, setScrollY] = useState(0);
-  const [height, setHeight] = useState(0);
   const [showNavBar, setShowNavBar] = useState(false);
 
-  useEffect(() => {
-    //get scroll position to compare with landing page height
-    const handleScroll = () => {
-      setScrollY(window.scrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-  }, []);
 
   return (
-    <div className="scroll-smooth">
-      <LandingPage setHeight={setHeight} height={height} />
+    <div className="scroll-smooth scroll-snap-y scroll-snap-mandatory">
+      <LandingPage />
       <BrowserRouter>
         <NavBar
-          scrollY={scrollY}
-          height={height}
+          className="sticky top-0 z-50"
           setShowNavBar={setShowNavBar}
           showNavBar={showNavBar}
         />
