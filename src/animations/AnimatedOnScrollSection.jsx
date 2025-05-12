@@ -26,10 +26,10 @@ export default function ScrollAnimatedSection({ children }) {
               y: 0,
             }}
             //when the animation is finisching
-            exit={{
-              opacity: 0,
-              y: scrollDir === "down" ? -500 : 500,
-            }}
+            // exit={{
+            //   opacity: 0,
+            //   y: scrollDir === "down" ? -500 : 500,
+            // }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
             {children}

@@ -38,7 +38,8 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             <img
               src="/icons/menu.svg"
               alt="menu"
-              className="scale-80 object-contain brightness-0 invert filter"
+              // if you want black type inverted in class
+              className="scale-80 object-contain brightness-0  filter"
               onClick={() => setShowContentForNav(!showContentForNav)}
             />
           </div>

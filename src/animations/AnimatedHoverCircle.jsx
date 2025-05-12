@@ -25,28 +25,38 @@ export default function ToggleCard({ text, image }) {
           return prev;
         }
       });
-    }, 300);
+    }, 150);
 
     return () => clearInterval(interval);
   }, [direction, letters.length]);
 
   return (
-    <motion.div className={`flex h-fit w-fit items-center justify-center gap-3 rounded-4xl p-4 shadow-lg ${bGcolor}`}>
-      <img className=" object-contain brightness-0 invert filter h-16 w-16 object-cover" src={image} alt="logo" />
-      <div className="flex font-bold text-white">
-        <AnimatePresence>
-          {letters.slice(0, visibleCount).map((char, index) => (
-            <motion.span
-              key={char + index}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ duration: 0.1 }}
-            >
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
-        </AnimatePresence>
+    <motion.div
+    >
+      <div  className={`flex h-fit w-fit items-center justify-center rounded-4xl p-4 ${bGcolor}`}>
+        {/* if you want black type inverted in class */}
+        <img
+          className="h-16 w-16 object-contain object-cover p-2 brightness-0 filter"
+          src={image}
+          alt="logo"
+        />
+        <div
+          className={`flex w-fit font-bold text-black ${letters.length == 0 ? "pl-3" : ""}`}
+        >
+          <AnimatePresence>
+            {letters.slice(0, visibleCount).map((char, index) => (
+              <motion.span
+                key={char + index}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.1 }}
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
+          </AnimatePresence>
+        </div>
       </div>
     </motion.div>
   );

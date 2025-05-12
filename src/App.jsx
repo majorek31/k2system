@@ -17,32 +17,34 @@ function App() {
   const [showNavBar, setShowNavBar] = useState(false);
 
   return (
-    <div className="overflow-y-scroll scroll-smooth">
-      <LandingPage />
-      <BrowserRouter>
-        <NavBar
-          className="sticky top-0 z-50"
-          setShowNavBar={setShowNavBar}
-          showNavBar={showNavBar}
-        />
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/delivery" element={<DeliveryPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/service" element={<ServicePage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/shop" element={<ShopPage />} />
-        </Routes>
-      </BrowserRouter>
-      <div className="h-1000">
-        {/* content later */}
-        {/* https://examples.motion.dev/ */}
-      </div>
+    <div className="scroll-smooth">
+      <div className="fixed top-0 left-0 -z-10 h-screen w-screen bg-[url('./public/backgrounds/wave_background.png')] bg-cover"></div>
+        <div className="relative">
+          <LandingPage />
+          <BrowserRouter>
+            <NavBar
+              className="sticky top-0 z-50"
+              setShowNavBar={setShowNavBar}
+              showNavBar={showNavBar}
+            />
+            <Routes>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/delivery" element={<DeliveryPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/service" element={<ServicePage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/shop" element={<ShopPage />} />
+            </Routes>
+          </BrowserRouter>
+          <div className="h-1000">
+            {/* content later */}
+            {/* https://examples.motion.dev/ */}
+          </div>
+        </div>
     </div>
   );
-  <br />;
 }
 
 export default App;
