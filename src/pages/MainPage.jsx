@@ -20,6 +20,10 @@ export default function MainPage() {
   const [activeModal, setActiveModal] = useState(null);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (activeModal) {
       document.body.style.overflow = "hidden";
     } else {

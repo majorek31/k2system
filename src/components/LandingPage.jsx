@@ -37,7 +37,7 @@ export default function LandingPage() {
       setIsScrolling(true);
 
       window.scrollTo({
-        top: height + 6,
+        top: height + 8,
         behavior: "smooth",
       });
 
@@ -56,6 +56,7 @@ export default function LandingPage() {
     ) {
       document.body.style.overflow = "hidden";
       setIsScrolling(true);
+      
 
       window.scrollTo({
         top: 0,

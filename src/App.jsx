@@ -1,11 +1,10 @@
 //react
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 //react router
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 
 //components
-import LandingPage from "./components/landingPage";
 import NavBar from "./components/NavBar";
 import FooterPage from "./components/FooterPage";
 import AboutPage from "./pages/AboutPage";
@@ -16,6 +15,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ServicePage from "./pages/ServicePage";
 import SettingsPage from "./pages/SettingsPage";
 import ShopPage from "./pages/ShopPage";
+import LandingPage from "./components/LandingPage";
 
 function App() {
   const boxRef = useRef(null);

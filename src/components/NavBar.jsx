@@ -81,7 +81,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"75ms"}
             where={"/register"}
           >
-            {service}
+            {register}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
@@ -89,7 +89,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             v2={"100ms"}
             where={"/service"}
           >
-            {register}
+            {service}
           </SingleBar>
           <SingleBar
             showContentForNav={showContentForNav}
