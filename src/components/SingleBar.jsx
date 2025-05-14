@@ -1,8 +1,9 @@
-import React from "react";
+//react router
 import { Link } from "react-router-dom";
-import { useTheme } from "../hooks/useTheme";
-import { useContext } from "react";
-import { AnimationContext } from "../context/AnimationContext";
+
+//hooks
+import { useTheme } from "../hooks/useContext/useTheme";
+import { useAnimation } from "../hooks/useContext/useAnimation";
 
 export default function SingleBar({
   showContentForNav,
@@ -12,7 +13,7 @@ export default function SingleBar({
   where,
 }) {
   // v1 is delay when opening a nav and v2 when closing
-  const { height } = useContext(AnimationContext);
+  const { height } = useAnimation();
   const { bGcolor } = useTheme();
 
   return (

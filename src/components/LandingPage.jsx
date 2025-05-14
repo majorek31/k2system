@@ -1,87 +1,83 @@
-import React, { useState } from "react";
-import { useEffect, useRef } from "react";
-import { useTheme } from "../hooks/useTheme";
-import { useContext } from "react";
+//react
+import { useState, useEffect, useRef, useContext } from "react";
+
+//context
 import { AnimationContext } from "../context/AnimationContext";
-import { useScroll } from "@react-three/drei";
+
+//hooks
+import { useScrollDirection } from "../hooks/useScrollDirection";
 
 export default function LandingPage() {
   const boxRef = useRef(null);
-
-  const [scrollLandingPageDirection, setScrollLandingPageDirection] =
-    useState("");
   const [isScrolling, setIsScrolling] = useState(false);
 
-  const { bGcolor } = useTheme();
-  const { scrollY, height } = useContext(AnimationContext);
+  const scrollDir = useScrollDirection();
 
-  const { setHeight } = useContext(AnimationContext);
+  const { scrollY, height, setHeight } = useContext(AnimationContext);
 
-  // set the height of landing page to compare later when navbar schould pop
-  // it need to have the delay bc some of the content is loaded later and the height is wrong
-
+  // Set the height of landing page to compare later when navbar should pop
   useEffect(() => {
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (boxRef.current) {
         setHeight(boxRef.current.offsetHeight);
       }
     }, 50);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [setHeight]);
 
   useEffect(() => {
-    scrollY > height
-      ? setScrollLandingPageDirection("up")
-      : setScrollLandingPageDirection("down");
-  }, [scrollY, height]);
-  {
-    console.log(scrollLandingPageDirection);
-  }
-  useEffect(() => {
-    // Warunek, gdy przewijamy w dół
+    // Scroll down
     if (
       scrollY > 0 &&
       scrollY < height &&
-      scrollLandingPageDirection == "down" &&
+      scrollDir === "down" &&
       !isScrolling
     ) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
       setIsScrolling(true);
+
       window.scrollTo({
         top: height + 6,
         behavior: "smooth",
       });
-      setScrollLandingPageDirection("up");
 
       setTimeout(() => {
         setIsScrolling(false);
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = "auto";
       }, 700);
     }
+
+    // Scroll up
     if (
-      scrollLandingPageDirection == "up" &&
+      scrollDir === "up" &&
       scrollY > height &&
       scrollY < height + 5 &&
       !isScrolling
     ) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
       setIsScrolling(true);
+
       window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
-      setScrollLandingPageDirection("down");
 
       setTimeout(() => {
         setIsScrolling(false);
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = "auto";
       }, 700);
     }
-  }, [scrollY, height, isScrolling]);
+  }, [scrollY, height, isScrolling, scrollDir]);
 
   return (
-    <div ref={boxRef} className={`justify-left flex h-screen items-center`}>
+    <div
+      ref={boxRef}
+      className="justify-left flex h-screen items-center transition-transform will-change-transform motion-reduce:transition-none"
+    >
       <h1 className="m-5 p-5 text-4xl font-bold text-white text-shadow-sm text-shadow-white md:m-8 md:p-8 md:text-6xl lg:m-10 lg:p-10 lg:text-8xl">
         k2system
+        <br />
+        wynajem drukarek
       </h1>
     </div>
   );

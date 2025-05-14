@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from "react";
+//react
+import { createContext, useState, useEffect } from "react";
 
 // Tworzymy kontekst
 export const AnimationContext = createContext();
@@ -18,7 +19,12 @@ export function AnimationProvider({ children }) {
 
   return (
     <AnimationContext.Provider
-      value={{ scrollY, setScrollY, height, setHeight }}
+      value={{
+        scrollY,
+        setScrollY,
+        height,
+        setHeight,
+      }}
     >
       {children}
     </AnimationContext.Provider>

@@ -1,14 +1,17 @@
-import { useState } from "react";
-import { Fragment, useEffect } from "react";
-import { useTheme } from "../hooks/useTheme";
-import { useContext } from "react";
-import { AnimationContext } from "../context/AnimationContext";
-import { WordContext } from "../context/WordContext";
+//react
+import { Fragment, useEffect,useState } from "react";
+
+//hooks
+import { useTheme } from "../hooks/useContext/useTheme";
+import { useWord } from "../hooks/useContext/useWord";
+import { useAnimation } from "../hooks/useContext/useAnimation";
+
+//components
 import SingleBar from "./SingleBar";
 
 export default function NavBar({ showNavBar, setShowNavBar }) {
   const [showContentForNav, setShowContentForNav] = useState(false);
-  const { scrollY, height } = useContext(AnimationContext);
+  const { scrollY, height } = useAnimation();
   const { bGcolor } = useTheme();
   const {
     mainPage,
@@ -19,7 +22,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
     shop,
     contact,
     settings,
-  } = useContext(WordContext);
+  } = useWord();
 
   // check if navbar schould be visible
 
@@ -31,7 +34,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
   return (
     <Fragment>
       <div
-        className={`fixed top-0 right-0 left-0 z-50 flex h-fit w-full flex-col transition-all duration-500 ease-in-out ${showNavBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}
+        className={`fixed top-0 right-0 left-0 z-50 flex h-fit flex-col transition-all duration-500 ease-in-out ${showNavBar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"}`}
       >
         <div className={`mx-5 my-2 h-fit rounded-xl ${bGcolor} shadow-lg`}>
           <div className="float-left flex items-center justify-center p-0">
@@ -39,14 +42,14 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
               src="/icons/menu.svg"
               alt="menu"
               // if you want black type inverted in class
-              className="scale-80 object-contain brightness-0  filter"
+              className="scale-80 object-contain brightness-0 filter"
               onClick={() => setShowContentForNav(!showContentForNav)}
             />
           </div>
           <div className="float-right">{/* logo */}</div>
         </div>
         <div
-          className={`transition-all duration-500 ease-in-out ${showContentForNav ? "opacity-100" : "opacity-0"}`}
+          className={`overflow-hidden transition-all duration-500 ease-in-out ${showContentForNav ? "pointer-events-auto max-h-[1000px] opacity-100" : "pointer-events-none max-h-0 opacity-0"}`}
         >
           <SingleBar
             showContentForNav={showContentForNav}
