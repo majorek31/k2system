@@ -213,13 +213,15 @@ export default function MainPage() {
 
       <AnimatedOnScrollSection>
         <div>
-          <h1 className="p-5 text-center m-50 text-2xl font-bold text-white lg:text-4xl">
+          <h1 className="m-50 p-5 text-center text-2xl font-bold text-white lg:text-4xl">
             Oceny naszych użytkowników:
           </h1>
         </div>
       </AnimatedOnScrollSection>
 
-      <div className={"flex w-full flex-col lg:flex-wrap lg:flex-row gap-10 mb-50"}>
+      <div
+        className={"mb-50 flex w-full flex-col gap-10 lg:flex-row lg:flex-wrap"}
+      >
         <RateContainer
           userName={"nazwa_uzytkownika"}
           text={

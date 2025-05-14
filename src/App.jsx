@@ -43,7 +43,7 @@ function App() {
             <Route path="/shop" element={<ShopPage />} />
           </Routes>
         </BrowserRouter>
-        <FooterPage/>
+        <FooterPage />
       </div>
     </div>
   );

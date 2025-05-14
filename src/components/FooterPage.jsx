@@ -23,7 +23,7 @@ export default function FooterPage() {
             </button>
           </div>
         </div>
-        <div className="jusify-center m-5 flex flex-col items-center gap-10 p-3lg:w-[33%]">
+        <div className="jusify-center p-3lg:w-[33%] m-5 flex flex-col items-center gap-10">
           <p className="text-center text-2xl font-bold">kontakt</p>
           <p className="text-center">Zapytaj o ofertę i wycenę sprzętu</p>
           <div className="jusify-center flex items-center gap-5">
@@ -61,14 +61,14 @@ export default function FooterPage() {
           <p>wynajem kserokopiarek</p>
         </div>
       </div>
-        <div className="m-5 mb-0 flex flex-row items-center justify-center gap-0 p-3">
-          <img
-            src="/icons/copyright.svg"
-            className="scale-50 object-contain"
-            alt=""
-          />
-          <p> Copyright 2019 nazwa_firmy. Wszystkie prawa zastrzeżone.</p>
-        </div>
+      <div className="m-5 mb-0 flex flex-row items-center justify-center gap-0 p-3">
+        <img
+          src="/icons/copyright.svg"
+          className="scale-50 object-contain"
+          alt=""
+        />
+        <p> Copyright 2019 nazwa_firmy. Wszystkie prawa zastrzeżone.</p>
+      </div>
     </div>
   );
 }

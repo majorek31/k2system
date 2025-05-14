@@ -26,7 +26,7 @@ export default function ScrollAnimatedSection({ children }) {
         // when in view, animate to full opacity and 0 position
         animate={{
           opacity: inView ? 1 : 0,
-          y: inView ? 0 : (scrollDir === "down" ? 500 : -500),
+          y: inView ? 0 : scrollDir === "down" ? 500 : -500,
         }}
         // exit animation when it goes out of view
         exit={{

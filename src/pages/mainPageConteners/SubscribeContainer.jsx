@@ -1,12 +1,8 @@
 import AnimatedOnScrollSection from "../../animations/AnimatedOnScrollSection";
 
-import { useState} from "react";
+import { useState } from "react";
 
-export default function SubscribeContainer({
-  title,
-  features,
-  price,
-}) {
+export default function SubscribeContainer({ title, features, price }) {
   const [isHovered, setIsHovered] = useState(false);
   return (
     <AnimatedOnScrollSection>

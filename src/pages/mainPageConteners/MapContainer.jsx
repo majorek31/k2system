@@ -17,9 +17,7 @@ export default function MapCointainer() {
   const position = [49.74581, 18.66576];
 
   return (
-    <div
-      className="h-100 w-screen grayscale-100 lg:h-120"
-    >
+    <div className="h-100 w-screen grayscale-100 lg:h-120">
       <MapContainer
         center={position}
         zoom={13}
