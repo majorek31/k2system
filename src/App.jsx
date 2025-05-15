@@ -11,7 +11,7 @@ import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import DeliveryPage from "./pages/DeliveryPage";
 import MainPage from "./pages/MainPage";
-import RegisterPage from "./pages/RegisterPage";
+import RegisterPage from "./pages/RegisterLoginPage";
 import ServicePage from "./pages/ServicePage";
 import SettingsPage from "./pages/SettingsPage";
 import ShopPage from "./pages/ShopPage";

@@ -10,10 +10,15 @@ import { useScrollDirection } from "../hooks/useScrollDirection";
 export default function LandingPage() {
   const boxRef = useRef(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [lastScrollDir, setlastScrollDir] = useState(false);
 
   const scrollDir = useScrollDirection();
 
   const { scrollY, height, setHeight } = useContext(AnimationContext);
+
+  useEffect(() => {
+    scrollDir === "up" ? setlastScrollDir("up") : setlastScrollDir("down");
+  }, [scrollDir]);
 
   // Set the height of landing page to compare later when navbar should pop
   useEffect(() => {
@@ -30,7 +35,7 @@ export default function LandingPage() {
     if (
       scrollY > 0 &&
       scrollY < height &&
-      scrollDir === "down" &&
+      lastScrollDir === "down" &&
       !isScrolling
     ) {
       document.body.style.overflow = "hidden";
@@ -49,14 +54,13 @@ export default function LandingPage() {
 
     // Scroll up
     if (
-      scrollDir === "up" &&
+      lastScrollDir === "up" &&
       scrollY > height &&
       scrollY < height + 5 &&
       !isScrolling
     ) {
       document.body.style.overflow = "hidden";
       setIsScrolling(true);
-      
 
       window.scrollTo({
         top: 0,
