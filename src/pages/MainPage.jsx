@@ -23,14 +23,6 @@ export default function MainPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    if (activeModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [activeModal]);
-
   return (
     <div>
       <div className="l-100vh w-full lg:flex lg:h-fit lg:flex-row lg:gap-3 lg:text-black">

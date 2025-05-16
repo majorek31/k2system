@@ -9,7 +9,7 @@ import { useScrollDirection } from "../hooks/useScrollDirection";
 
 export default function ScrollAnimatedSection({ children }) {
   // threshold is value that means the animation will begin with % of div we need to see to begin an animation
-  const { ref, inView } = useInView({ threshold: 0.05, triggerOnce: false });
+  const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: false });
   // check if i scroll down or up
   const scrollDir = useScrollDirection();
 

@@ -3,26 +3,23 @@ import { Fragment, useEffect, useState } from "react";
 
 //hooks
 import { useTheme } from "../hooks/useContext/useTheme";
-import { useWord } from "../hooks/useContext/useWord";
 import { useAnimation } from "../hooks/useContext/useAnimation";
 
 //components
-import SingleBar from "./SingleBar";
+import NavBarBars from "./NavBarConteners/NavBarBars";
+import AccountDetails from "./NavBarConteners/AccountDetails";
+import ShoppingList from "./NavBarConteners/ShoppingList";
+import UserList from "./NavBarConteners/UserList";
 
 export default function NavBar({ showNavBar, setShowNavBar }) {
+  const [showUsers, setShowUsers] = useState(false);
   const [showContentForNav, setShowContentForNav] = useState(false);
+  const [showContentForAccountDetails, setShowContentForAccountDetails] =
+    useState(false);
+  const [showContentForShoppingList, setShowContentForShoppingList] =
+    useState(false);
   const { scrollY, height } = useAnimation();
   const { bGcolor } = useTheme();
-  const {
-    mainPage,
-    delivery,
-    aboutUs,
-    register,
-    service,
-    shop,
-    contact,
-    settings,
-  } = useWord();
 
   // check if navbar schould be visible
 
@@ -30,6 +27,35 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
     scrollY >= height ? setShowNavBar(true) : setShowNavBar(false),
       setShowContentForNav(false);
   }, [scrollY, height]);
+
+  function handleToggleWithDelay({
+    toggleTarget,
+    currentTargetValue,
+    closeSetters,
+    openFlags,
+    delay = 500,
+  }) {
+    const shouldDelay = openFlags.some((flag) => flag);
+
+    // Zamknij wszystkie inne panele
+    closeSetters.forEach((set) => set(false));
+
+    if (shouldDelay) {
+      setTimeout(() => {
+        toggleTarget(!currentTargetValue);
+      }, delay);
+    } else {
+      toggleTarget(!currentTargetValue);
+    }
+  }
+
+    useEffect(() => {
+      if (showUsers) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+    }, [showUsers]);
 
   return (
     <Fragment>
@@ -41,82 +67,72 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
             <img
               src="/icons/menu.svg"
               alt="menu"
-              // if you want black type inverted in class
-              className="scale-80 object-contain brightness-0 filter"
-              onClick={() => setShowContentForNav(!showContentForNav)}
+              className="scale-80 object-contain p-2 brightness-0 filter"
+              onClick={() =>
+                handleToggleWithDelay({
+                  toggleTarget: setShowContentForNav,
+                  currentTargetValue: showContentForNav,
+                  closeSetters: [
+                    setShowContentForShoppingList,
+                    setShowContentForAccountDetails,
+                  ],
+                  openFlags: [
+                    showContentForShoppingList,
+                    showContentForAccountDetails,
+                  ],
+                })
+              }
             />
           </div>
-          <div className="float-right">{/* logo */}</div>
+          <div className="float-right w-fit">
+            <div className="flex">
+              <img
+                src="/icons/shoping_cart.svg"
+                alt="menu"
+                className="scale-90 object-contain p-2 brightness-0 filter"
+                onClick={() =>
+                  handleToggleWithDelay({
+                    toggleTarget: setShowContentForShoppingList,
+                    currentTargetValue: showContentForShoppingList,
+                    closeSetters: [
+                      setShowContentForNav,
+                      setShowContentForAccountDetails,
+                    ],
+                    openFlags: [
+                      showContentForNav,
+                      showContentForAccountDetails,
+                    ],
+                  })
+                }
+              />
+              <img
+                src="/icons/account.svg"
+                alt="menu"
+                className="scale-70 object-contain p-2 brightness-0 filter"
+                onClick={() =>
+                  handleToggleWithDelay({
+                    toggleTarget: setShowContentForAccountDetails,
+                    currentTargetValue: showContentForAccountDetails,
+                    closeSetters: [
+                      setShowContentForNav,
+                      setShowContentForShoppingList,
+                    ],
+                    openFlags: [showContentForNav, showContentForShoppingList],
+                  })
+                }
+              />
+            </div>
+          </div>
         </div>
-        <div
-          className={`overflow-hidden transition-all duration-500 ease-in-out ${showContentForNav ? "pointer-events-auto max-h-[1000px] opacity-100" : "pointer-events-none max-h-0 opacity-0"}`}
-        >
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"0ms"}
-            v2={"0ms"}
-            where={"/"}
-          >
-            {mainPage}
-          </SingleBar>
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"150ms"}
-            v2={"25ms"}
-            where={"/delivery"}
-          >
-            {delivery}
-          </SingleBar>
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"300ms"}
-            v2={"50ms"}
-            where={"/about"}
-          >
-            {aboutUs}
-          </SingleBar>
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"400ms"}
-            v2={"75ms"}
-            where={"/register"}
-          >
-            {register}
-          </SingleBar>
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"500ms"}
-            v2={"100ms"}
-            where={"/service"}
-          >
-            {service}
-          </SingleBar>
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"600ms"}
-            v2={"125ms"}
-            where={"/shop"}
-          >
-            {shop}
-          </SingleBar>
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"700ms"}
-            v2={"150ms"}
-            where={"/contact"}
-          >
-            {contact}
-          </SingleBar>
-          <SingleBar
-            showContentForNav={showContentForNav}
-            v1={"800ms"}
-            v2={"175ms"}
-            where={"/settings"}
-          >
-            {settings}
-          </SingleBar>
-        </div>
+        <NavBarBars showContentForNav={showContentForNav} />
+        <AccountDetails
+          showContentForAccountDetails={showContentForAccountDetails}
+          setShowContentForAccountDetails={setShowContentForAccountDetails}
+          setShowUsers={setShowUsers}
+        />
+        <ShoppingList showContentForShoppingList={showContentForShoppingList} />
       </div>
+      <UserList showUsers={showUsers} setShowUsers={setShowUsers} />
     </Fragment>
   );
 }
