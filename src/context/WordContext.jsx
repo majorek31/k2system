@@ -16,6 +16,7 @@ export function WordProvider({ children }) {
         shop: "Sklep",
         contact: "Kontakt",
         settings: "Ustawienia",
+        rateForm:"Oceń nasze usługi"
       }}
     >
       {children}

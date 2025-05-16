@@ -16,6 +16,7 @@ import ServicePage from "./pages/ServicePage";
 import SettingsPage from "./pages/SettingsPage";
 import ShopPage from "./pages/ShopPage";
 import LandingPage from "./components/LandingPage";
+import RatePage from "./pages/RatePage";
 
 function App() {
   const boxRef = useRef(null);
@@ -41,6 +42,7 @@ function App() {
             <Route path="/service" element={<ServicePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/shop" element={<ShopPage />} />
+            <Route path="/rateForm" element={<RatePage />} />
           </Routes>
         </BrowserRouter>
         <FooterPage />

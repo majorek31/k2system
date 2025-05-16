@@ -12,6 +12,7 @@ export default function NavBarBars({ showContentForNav }) {
     shop,
     contact,
     settings,
+    rateForm
   } = useWord();
   return (
     <div
@@ -27,7 +28,7 @@ export default function NavBarBars({ showContentForNav }) {
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
-        v1={"150ms"}
+        v1={"100ms"}
         v2={"25ms"}
         where={"/delivery"}
       >
@@ -35,7 +36,7 @@ export default function NavBarBars({ showContentForNav }) {
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
-        v1={"300ms"}
+        v1={"200ms"}
         v2={"50ms"}
         where={"/about"}
       >
@@ -43,24 +44,32 @@ export default function NavBarBars({ showContentForNav }) {
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
-        v1={"400ms"}
+        v1={"300ms"}
         v2={"75ms"}
-        where={"/register"}
-      >
-        {register}
-      </SingleBar>
-      <SingleBar
-        showContentForNav={showContentForNav}
-        v1={"500ms"}
-        v2={"100ms"}
         where={"/service"}
       >
         {service}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
-        v1={"600ms"}
+        v1={"400ms"}
+        v2={"100ms"}
+        where={"/contact"}
+      >
+        {contact}
+      </SingleBar>
+      <SingleBar
+        showContentForNav={showContentForNav}
+        v1={"500ms"}
         v2={"125ms"}
+        where={"/register"}
+      >
+        {register}
+      </SingleBar>
+      <SingleBar
+        showContentForNav={showContentForNav}
+        v1={"600ms"}
+        v2={"150ms"}
         where={"/shop"}
       >
         {shop}
@@ -68,15 +77,15 @@ export default function NavBarBars({ showContentForNav }) {
       <SingleBar
         showContentForNav={showContentForNav}
         v1={"700ms"}
-        v2={"150ms"}
-        where={"/contact"}
+        v2={"175ms"}
+        where={"/rateForm"}
       >
-        {contact}
+        {rateForm}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
         v1={"800ms"}
-        v2={"175ms"}
+        v2={"200ms"}
         where={"/settings"}
       >
         {settings}
