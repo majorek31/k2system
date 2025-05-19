@@ -1,20 +1,12 @@
-//react router
+import React from "react";
 import { Link } from "react-router-dom";
-
-//hooks
 import { useTheme } from "../hooks/useContext/useTheme";
 import { useAnimation } from "../hooks/useContext/useAnimation";
 
-export default function SingleBar({
-  showContentForNav,
-  v1,
-  v2,
-  children,
-  where,
-}) {
-  // v1 is delay when opening a nav and v2 when closing
+export default function SingleBar({ showContentForNav, v1, v2, children, where }) {
   const { height } = useAnimation();
   const { bGcolor } = useTheme();
+
 
   return (
     <div
@@ -27,3 +19,4 @@ export default function SingleBar({
     </div>
   );
 }
+

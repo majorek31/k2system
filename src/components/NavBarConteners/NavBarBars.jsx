@@ -1,19 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import SingleBar from "../SingleBar";
-import { useWord } from "../../hooks/useContext/useWord";
+import SingleWord from "../SingleWord";
 
-export default function NavBarBars({ showContentForNav }) {
-  const {
-    mainPage,
-    delivery,
-    aboutUs,
-    register,
-    service,
-    shop,
-    contact,
-    settings,
-    rateForm
-  } = useWord();
+function NavBarBars({ showContentForNav }) {
+
   return (
     <div
       className={`overflow-hidden transition-all duration-500 ease-in-out ${showContentForNav ? "pointer-events-auto max-h-[1000px] opacity-100" : "pointer-events-none max-h-0 opacity-0"}`}
@@ -24,7 +14,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"0ms"}
         where={"/"}
       >
-        {mainPage}
+        <SingleWord  whichOne={"MainPageLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -32,7 +22,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"25ms"}
         where={"/delivery"}
       >
-        {delivery}
+        {/* {delivery} */}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -40,7 +30,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"50ms"}
         where={"/about"}
       >
-        {aboutUs}
+        {/* {aboutUs} */}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -48,7 +38,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"75ms"}
         where={"/service"}
       >
-        {service}
+        {/* {service} */}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -56,7 +46,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"100ms"}
         where={"/contact"}
       >
-        {contact}
+        {/* {contact} */}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -64,7 +54,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"125ms"}
         where={"/register"}
       >
-        {register}
+        {/* {register} */}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -72,7 +62,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"150ms"}
         where={"/shop"}
       >
-        {shop}
+        {/* {shop} */}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -80,7 +70,7 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"175ms"}
         where={"/rateForm"}
       >
-        {rateForm}
+        {/* {rateForm} */}
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -88,8 +78,10 @@ export default function NavBarBars({ showContentForNav }) {
         v2={"200ms"}
         where={"/settings"}
       >
-        {settings}
+        {/* {settings} */}
       </SingleBar>
     </div>
   );
 }
+
+export default React.memo(NavBarBars);
