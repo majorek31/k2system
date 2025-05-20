@@ -136,3 +136,5 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
     </Fragment>
   );
 }
+
+

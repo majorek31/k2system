@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import SingleBar from "../SingleBar";
 import SingleWord from "../SingleWord";
+import { useUserInfo } from "../../hooks/useContext/useUserInfo";
 
 function NavBarBars({ showContentForNav }) {
+  const { isLogged } = useUserInfo();
 
   return (
     <div
@@ -14,7 +16,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"0ms"}
         where={"/"}
       >
-        <SingleWord  whichOne={"MainPageLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"MainPageLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -22,7 +24,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"25ms"}
         where={"/delivery"}
       >
-       <SingleWord  whichOne={"DeliverLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"DeliverLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -30,7 +32,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"50ms"}
         where={"/about"}
       >
-        <SingleWord  whichOne={"AboutUsLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"AboutUsLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -38,7 +40,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"75ms"}
         where={"/service"}
       >
-        <SingleWord  whichOne={"ServiceLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"ServiceLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -46,7 +48,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"100ms"}
         where={"/contact"}
       >
-        <SingleWord  whichOne={"ContactLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"ContactLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -54,7 +56,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"125ms"}
         where={"/register"}
       >
-        <SingleWord  whichOne={"RegisterLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"RegisterLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -62,7 +64,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"150ms"}
         where={"/shop"}
       >
-        <SingleWord  whichOne={"ShopLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"ShopLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -78,8 +80,18 @@ function NavBarBars({ showContentForNav }) {
         v2={"200ms"}
         where={"/settings"}
       >
-        <SingleWord  whichOne={"SettingsLink"} whichContent={"NavBar"} />
+        <SingleWord whichOne={"SettingsLink"} whichContent={"NavBar"} />
       </SingleBar>
+      {isLogged && (
+        <SingleBar
+          showContentForNav={showContentForNav}
+          v1={"900ms"}
+          v2={"225ms"}
+          where={"/settings"}
+        >
+          Wyloguj - nie ma w bazie
+        </SingleBar>
+      )}
     </div>
   );
 }

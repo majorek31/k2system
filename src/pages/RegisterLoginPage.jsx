@@ -1,16 +1,24 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import ScrollAnimatedSection from "../animations/AnimatedSlideForm";
 import LoginForm from "./registerPageConteners/LoginForm";
 import RegisterForm from "./registerPageConteners/RegisterForm";
+import { useUserInfo } from "../hooks/useContext/useUserInfo";
+import AnimationOnNavigate from "../animations/AnimationOnNavigate";
 // import PrinterModel from "../components/3dModels/PrinterModel";
 
 export default function RegisterPage() {
   const [activeForm, setActiveForm] = useState("register");
+  const [showLogInfo, setShowLogInfo] = useState("register");
+  const { isLogged } = useUserInfo();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    setShowLogInfo(!showLogInfo);
+  }, [isLogged]);
 
   return (
     <div className="mt-[40%] mb-[100%] flex h-screen w-full flex-col lg:mt-[10%] lg:mb-[10%] lg:flex-row">
@@ -60,6 +68,13 @@ export default function RegisterPage() {
       <div className="hidden w-1/2 items-center justify-center p-10 lg:flex">
         {/* <PrinterModel /> */}
       </div>
+      <AnimatePresence>
+        {showLogInfo && (
+          <AnimationOnNavigate setActiveModal={setShowLogInfo}>
+            <p>Zostałeś zalogowany!</p>
+          </AnimationOnNavigate>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

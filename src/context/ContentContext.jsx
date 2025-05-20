@@ -23,7 +23,7 @@ export const ContentProvider = ({ children }) => {
     const putUrl = `${baseUrl}/${endpoint}/${updatedData.key}`;
 
     const response = await doFetch(putUrl, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: accessToken ? `Bearer ${accessToken}` : "",

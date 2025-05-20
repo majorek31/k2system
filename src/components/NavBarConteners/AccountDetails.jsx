@@ -1,13 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useUserInfo } from "../../hooks/useContext/useUserInfo";
 
-export default function AccountDetails({
+function AccountDetails({
   showContentForAccountDetails,
   setShowContentForAccountDetails,
   setShowUsers,
 }) {
   const { isLogged, isAdmin, userInfo } = useUserInfo();
-  console.log(userInfo)
   return (
     <div>
       <div
@@ -16,8 +15,13 @@ export default function AccountDetails({
         {isLogged && (
           <div className="m-2 mr-5 rounded-xl bg-white p-3 pr-7 pl-7 text-center shadow">
             <h1 className="p-5 font-bold">Zalogowano jako: </h1>
-            <p className="p-1">Imie</p>
-            <p className="p-1">Nazwisko</p>
+            {userInfo && (
+              <div>
+                <p className="p-1">{userInfo.firstName}</p>
+                <p className="p-1">{userInfo.lastName}</p>
+                <p className="p-1">{userInfo.email}</p>
+              </div>
+            )}
             {isAdmin && (
               <div className="m-5 flex flex-col gap-4">
                 <button
@@ -47,3 +51,5 @@ export default function AccountDetails({
     </div>
   );
 }
+
+export default React.memo(AccountDetails);

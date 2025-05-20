@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import Input from "./Input";
 import { useFetch } from "../../hooks/useFetch";
-import { decodeJwt } from 'jose';
-import { useUserInfo } from "../../hooks/useContext/useUserInfo"
+import { useUserInfo } from "../../hooks/useContext/useUserInfo";
 
 export default function RegisterForm() {
   const [emailVal, setEmailVal] = useState("");
@@ -13,26 +12,43 @@ export default function RegisterForm() {
 
   const [passwordDoubleCheck, setPasswordDoubleCheck] = useState("");
   const [msgPasswordDoubleCheck, setMsgPasswordDoubleCheck] = useState("");
+  const { setUserInfo } = useUserInfo();
 
-  const [loginUrl, setLoginUrl] = useState("");
+  const { data: loginData, doFetch: loginFetch } = useFetch(
+    null,
+    { method: "GET" },
+    true,
+  );
 
-  const { data, error, isPending, doFetch } = useFetch(null, { method: "GET" }, true);
-  const { setUserInfo } = useUserInfo()
+  const { data: userData, doFetch: userFetch } = useFetch(
+    null,
+    { method: "GET" },
+    true,
+  );
 
   const login = (email, password) => {
-    console.log("dotarło");
     const url = `http://localhost:5000/auth/login?email=${email}&password=${password}`;
-    doFetch(url);
+    loginFetch(url);
   };
 
   useEffect(() => {
-    if (data && data.accessToken) {
-      localStorage.setItem("accessToken", data.accessToken);
-      const decodedUserInfo = decodeJwt(data.accessToken)
-      setUserInfo(decodedUserInfo)
+    if (loginData) {
+      localStorage.setItem("accessToken", loginData.accessToken);
+      userFetch("http://localhost:5000/user/me", {
+        method: "GET",
+        headers: {
+          Authorization: loginData ? `Bearer ${loginData.accessToken}` : "",
+        },
+      });
     }
-  }, [data]);
+  }, [loginData]);
 
+  useEffect(() => {
+    if (userData) {
+      localStorage.setItem("userData", JSON.stringify(userData));
+      setUserInfo(userData);
+    }
+  }, [userData]);
 
   const checkRegExEmail = (val) => {
     const emailContainsAt = /@/;
@@ -43,9 +59,15 @@ export default function RegisterForm() {
 
     const msg1 = emailContainsAt.test(val) ? "" : `Email musi zawierać "@": `;
     const msg2 = emailContainsDot.test(val) ? "" : `Email musi zawierać ".": `;
-    const msg3 = noSpacesRegEx.test(val) ? "" : "Email nie może zawierać spacji: ";
-    const msg4 = noSpecialCharsRegEx.test(val) ? "" : "Email zawiera niedozwolone znaki: ";
-    const msg5 = noHtmlCharsRegEx.test(val) ? "" : "Email nie może zawierać znaków HTML (np. <, >, &, \", '): ";
+    const msg3 = noSpacesRegEx.test(val)
+      ? ""
+      : "Email nie może zawierać spacji: ";
+    const msg4 = noSpecialCharsRegEx.test(val)
+      ? ""
+      : "Email zawiera niedozwolone znaki: ";
+    const msg5 = noHtmlCharsRegEx.test(val)
+      ? ""
+      : "Email nie może zawierać znaków HTML (np. <, >, &, \", '): ";
 
     setMsgEmail(msg1 + msg2 + msg3 + msg4 + msg5);
   };
@@ -58,11 +80,19 @@ export default function RegisterForm() {
     const noSpacesRegEx = /^\S+$/;
     const noHtmlCharsRegEx = /^[^<>/&"'`]*$/;
 
-    const msg1 = passwordMinLength.test(val) ? "" : `Hasło musi zawierać min. 8 znaków: `;
+    const msg1 = passwordMinLength.test(val)
+      ? ""
+      : `Hasło musi zawierać min. 8 znaków: `;
     // const msg2 = passwordHasCapital.test(val) ? "" : `Hasło musi zawierać przynajmniej jedną wielką literę: `;
-    const msg3 = passwordHasNumber.test(val) ? "" : `Hasło musi zawierać przynajmniej jedną cyfrę: `;
-    const msg4 = noSpacesRegEx.test(val) ? "" : "Hasło nie może zawierać spacji: ";
-    const msg5 = noHtmlCharsRegEx.test(val) ? "" : "Hasło nie może zawierać znaków HTML (np. <, >, &, \", '): ";
+    const msg3 = passwordHasNumber.test(val)
+      ? ""
+      : `Hasło musi zawierać przynajmniej jedną cyfrę: `;
+    const msg4 = noSpacesRegEx.test(val)
+      ? ""
+      : "Hasło nie może zawierać spacji: ";
+    const msg5 = noHtmlCharsRegEx.test(val)
+      ? ""
+      : "Hasło nie może zawierać znaków HTML (np. <, >, &, \", '): ";
 
     setMsgPassword(msg1 + msg3 + msg4 + msg5);
   };
@@ -71,7 +101,9 @@ export default function RegisterForm() {
     if (val === originalVal && val !== "") {
       setMsgPasswordDoubleCheck("");
     } else {
-      setMsgPasswordDoubleCheck("Podane hasło różni się od wcześniej podanego hasła");
+      setMsgPasswordDoubleCheck(
+        "Podane hasło różni się od wcześniej podanego hasła",
+      );
     }
   };
 
@@ -85,25 +117,10 @@ export default function RegisterForm() {
       passwordDoubleCheck !== ""
     ) {
       login(emailVal, password);
-
     } else {
       console.log("Nie wypełniłeś danych poprawnie lub masz błędy");
     }
   };
-
-  useEffect(() => {
-    console.log("usEfect")
-    if (error) {
-      console.error("Błąd logowania:", error);
-    }
-    if (isPending) {
-      console.log("loading")
-    }
-    if (data) {
-      console.log("Dane logowania:", data);
-    }
-  }, [data, error, isPending]);
-
 
   useEffect(() => {
     if (emailVal === "") return;
@@ -122,20 +139,28 @@ export default function RegisterForm() {
 
   return (
     <form
-      className="m-5 flex flex-col items-center justify-center gap-[30%] p-5 h-[80vh]"
+      className="m-5 flex h-[80vh] flex-col items-center justify-center gap-[30%] p-5"
       onSubmit={(e) => {
         e.preventDefault();
         sendData();
       }}
     >
-      <div className="flex flex-col lg:flex-row gap-4 min-h-[70vh] lg:min-h-[50vh] max-h-[700px]">
-
+      <div className="flex max-h-[700px] min-h-[70vh] flex-col gap-4 lg:min-h-[50vh] lg:flex-row">
         <div className="m-5 flex flex-col items-center justify-center gap-12 p-5">
-
-          <Input val={emailVal} msg={msgEmail} setVal={setEmailVal} type={"text"}>
+          <Input
+            val={emailVal}
+            msg={msgEmail}
+            setVal={setEmailVal}
+            type={"text"}
+          >
             Email
           </Input>
-          <Input val={password} msg={msgPassword} setVal={setPassword} type={"password"}>
+          <Input
+            val={password}
+            msg={msgPassword}
+            setVal={setPassword}
+            type={"password"}
+          >
             Hasło
           </Input>
           <Input
@@ -149,7 +174,7 @@ export default function RegisterForm() {
 
           <button
             type="submit"
-            className="m-5 rounded border-3 mt-10 border-slate-700 bg-white p-5 pr-10 pl-10 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125"
+            className="m-5 mt-10 rounded border-3 border-slate-700 bg-white p-5 pr-10 pl-10 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125"
           >
             Register
           </button>
