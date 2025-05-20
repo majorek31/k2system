@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { ContentContext } from "../../context/ContentContext"; // <- ścieżka zależy gdzie trzymasz ten kontekst
+import { ContentContext } from "../../context/ContentContext"; 
 
 export const useContent = () => {
   const context = useContext(ContentContext);
@@ -10,9 +10,7 @@ export const useContent = () => {
 
   const { data, isPending, error, fetchContent, updateContent } = context;
 
-  // 💥 Można tu coś jeszcze dopierdolić np. logi, toasty itd.
   const putWithLogging = async (updatedData) => {
-    console.log("PUT request leci z danymi:", updatedData);
     return await updateContent(updatedData);
   };
 
@@ -21,6 +19,6 @@ export const useContent = () => {
     isPending,
     error,
     fetchContent,
-    updateContent: putWithLogging, // nadpisujemy nazwę
+    updateContent: putWithLogging,
   };
 };

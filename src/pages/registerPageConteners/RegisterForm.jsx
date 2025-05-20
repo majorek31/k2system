@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Input from "./Input";
+import Radio from "./Radio";
+import AniamtedOnChangeOpacity from "../../animations/AniamtedOnChangeOpacity";
 import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick";
 
 import { AnimatePresence } from "framer-motion";
@@ -23,6 +25,51 @@ export default function registerForm() {
   const [showFinalInormationContainer, setShowFinalInormationContainer] =
     useState("");
   const [showErrorContainer, setShowErrorContainer] = useState("");
+
+  const [selectedType, setSelectedType] = useState("osoba");
+
+  const [nip, setNip] = useState("");
+  const [msgNip, setMsgNip] = useState("");
+
+  const [firmaNazwa, setFirmaNazwa] = useState("");
+  const [msgFirmaNazwa, setMsgFirmaNazwa] = useState("");
+
+  const [visible, setVisible] = useState(true);
+
+  const checkRegExNip = (val) => {
+    val = val.trim();
+    const nipRegEx = /^[0-9]{8,12}$/;
+    const noSpacesRegEx = /^\S+$/;
+    const noHtmlCharsRegEx = /^[^<>/&"'`]*$/;
+
+    const msg1 = nipRegEx.test(val)
+      ? ""
+      : "NIP musi zawierać dokładnie miedzy 8 do 12 cyfr (bez liter, znaków specjalnych)";
+    const msg2 = noHtmlCharsRegEx.test(val)
+      ? ""
+      : "Nazwa firmy nie może zawierać znaków HTML (np. <, >, &, \", '): ";
+    const msg3 = noSpacesRegEx.test(val)
+      ? ""
+      : "Imię nie może zawierać spacji: ";
+
+    setMsgNip(msg1 + msg2 + msg3);
+  };
+
+  const checkRegExFirmaNazwa = (val) => {
+    val = val.trim();
+    const minLenRegEx = /^.{3,}$/;
+    const noHtmlCharsRegEx = /^[^<>/&"'`]*$/;
+
+    const msg1 = minLenRegEx.test(val)
+      ? ""
+      : "Nazwa firmy musi mieć minimum 3 znaki: ";
+    const msg2 = noHtmlCharsRegEx.test(val)
+      ? ""
+      : "Nazwa firmy nie może zawierać znaków HTML (np. <, >, &, \", '): ";
+    setMsgFirmaNazwa(msg1 + msg2);
+  };
+
+
   const checkRegExFirstName = (val) => {
     val = val.trim();
     const firstNameStartsWithCapitalRegEx = /^[A-Z]/;
@@ -141,8 +188,8 @@ export default function registerForm() {
     val === val2 && val !== ""
       ? setMsgPasswordDoubleCheck("")
       : setMsgPasswordDoubleCheck(
-          "Podane hasło różńi się od wcześniej podanego hasła",
-        );
+        "Podane hasło różńi się od wcześniej podanego hasła",
+      );
     console.log(msgPasswrodDoubleCheck);
   };
 
@@ -196,6 +243,17 @@ export default function registerForm() {
   }, [lastName]);
 
   useEffect(() => {
+    if (nip === "") return;
+    checkRegExNip(nip);
+  }, [nip]);
+
+  useEffect(() => {
+    if (firmaNazwa === "") return;
+    checkRegExFirmaNazwa(firmaNazwa);
+  }, [firmaNazwa]);
+
+
+  useEffect(() => {
     if (emailVal === "") {
       return;
     }
@@ -221,41 +279,136 @@ export default function registerForm() {
       className="m-5 flex flex-col items-center justify-center gap-15 p-5"
       onSubmit={(e) => (e.preventDefault(), sendData())}
     >
-      <Input
-        val={firstName}
-        msg={msgFirstName}
-        setVal={setFirstName}
-        type={"text"}
-      >
-        Name
-      </Input>
-      <Input
-        val={lastName}
-        msg={msgLastName}
-        setVal={setLastName}
-        type={"text"}
-      >
-        nazwisko
-      </Input>
-      <Input val={emailVal} msg={msgEmail} setVal={setEmailVal} type={"text"}>
-        email
-      </Input>
-      <Input
-        val={password}
-        msg={msgPasswrod}
-        setVal={setPassword}
-        type={"password"}
-      >
-        hasło
-      </Input>
-      <Input
-        val={passwordDoubleCheck}
-        msg={msgPasswrodDoubleCheck}
-        setVal={setPasswordDoubleCheck}
-        type={"password"}
-      >
-        potwierdz hasło
-      </Input>
+      <div className="flex gap-15">
+        <Radio
+          name="accountType"
+          value="osoba"
+          checked={selectedType === "osoba"}
+          onChange={() => setSelectedType("osoba")}
+          onClick={() => (setVisible(true))}
+        >
+          Konto Osobiste
+        </Radio>
+        <Radio
+          name="accountType"
+          value="firma"
+          checked={selectedType === "firma"}
+          onChange={() => setSelectedType("firma")}
+          onClick={() => (setVisible(true))}
+        >
+          Konto Firmowe
+        </Radio>
+      </div>
+
+      {selectedType === "osoba" && (
+        <AniamtedOnChangeOpacity isVisible={visible}>
+          <div className="flex flex-col lg:flex-row gap-4 min-h-[70vh] lg:min-h-[50vh] max-h-[700px]">
+            {/* Kolumna 1 */}
+            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
+              <Input
+                val={firstName}
+                msg={msgFirstName}
+                setVal={setFirstName}
+                type="text"
+              >
+                Name
+              </Input>
+              <Input
+                val={lastName}
+                msg={msgLastName}
+                setVal={setLastName}
+                type="text"
+              >
+                nazwisko
+              </Input>
+            </div>
+
+            {/* Kolumna 2 */}
+            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
+              <Input val={emailVal} msg={msgEmail} setVal={setEmailVal} type="text">
+                email
+              </Input>
+              <Input
+                val={password}
+                msg={msgPasswrod}
+                setVal={setPassword}
+                type="password"
+              >
+                hasło
+              </Input>
+              <Input
+                val={passwordDoubleCheck}
+                msg={msgPasswrodDoubleCheck}
+                setVal={setPasswordDoubleCheck}
+                type="password"
+              >
+                potwierdz hasło
+              </Input>
+            </div>
+          </div>
+        </AniamtedOnChangeOpacity>
+      )}
+
+      {selectedType === "firma" && (
+        <AniamtedOnChangeOpacity isVisible={visible}>
+          <div className="flex flex-col lg:flex-row gap-4 min-h-[50vh] max-h-[700px]">
+            {/* Kolumna 1 */}
+            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
+              <Input
+                val={firstName}
+                msg={msgFirstName}
+                setVal={setFirstName}
+                type="text"
+              >
+                Name
+              </Input>
+              <Input
+                val={lastName}
+                msg={msgLastName}
+                setVal={setLastName}
+                type="text"
+              >
+                nazwisko
+              </Input>
+              <Input val={emailVal} msg={msgEmail} setVal={setEmailVal} type="text">
+                email
+              </Input>
+            </div>
+
+            {/* Kolumna 2 */}
+            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
+              <Input val={nip} msg={msgNip} setVal={setNip} type="text">
+                NIP
+              </Input>
+              <Input
+                val={firmaNazwa}
+                msg={msgFirmaNazwa}
+                setVal={setFirmaNazwa}
+                type="text"
+              >
+                Nazwa Firmy
+              </Input>
+              <Input
+                val={password}
+                msg={msgPasswrod}
+                setVal={setPassword}
+                type="password"
+              >
+                hasło
+              </Input>
+              <Input
+                val={passwordDoubleCheck}
+                msg={msgPasswrodDoubleCheck}
+                setVal={setPasswordDoubleCheck}
+                type="password"
+              >
+                potwierdz hasło
+              </Input>
+            </div>
+          </div>
+        </AniamtedOnChangeOpacity>
+      )}
+
 
       <button
         type="submit"
@@ -285,6 +438,6 @@ export default function registerForm() {
           </AnimatedDetailOnClick>
         )}
       </AnimatePresence>
-    </form>
+    </form >
   );
 }

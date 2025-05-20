@@ -6,7 +6,8 @@ export default function AccountDetails({
   setShowContentForAccountDetails,
   setShowUsers,
 }) {
-  const { isLogged, isAdmin} = useUserInfo();
+  const { isLogged, isAdmin, userInfo } = useUserInfo();
+  console.log(userInfo)
   return (
     <div>
       <div

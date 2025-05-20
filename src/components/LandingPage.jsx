@@ -42,7 +42,7 @@ export default function LandingPage() {
       setIsScrolling(true);
 
       window.scrollTo({
-        top: height + 8,
+        top: height + 80,
         behavior: "smooth",
       });
 
@@ -56,7 +56,7 @@ export default function LandingPage() {
     if (
       lastScrollDir === "up" &&
       scrollY > height &&
-      scrollY < height + 5 &&
+      scrollY < height + 50 &&
       !isScrolling
     ) {
       document.body.style.overflow = "hidden";

@@ -20,23 +20,24 @@ export default function SingleWord({ whichOne, whichContent }) {
     }
   }, [fetchContent, whichContent]);
 
-  useEffect(() => {
-    if (!isPending && !error && data?.translations) {
-      console.log(whichOne);
-      const wordObj = data.translations.find((el) => el.key === whichOne);
+useEffect(() => {
+  if (!isPending && !error && data?.translations) {
+    const wordObj = data.translations.find((el) => el.key === whichOne);
+    if (wordObj) {
       setCorectWord(wordObj.content);
       setCorectWordObj(wordObj);
+    } else {
+      setCorectWord(null);
+      setCorectWordObj(null);
     }
-  }, [data, isPending, error, whichOne]);
+  }
+}, [data, isPending, error, whichOne]);
 
-  console.log(data);
 
   const onBlur = () => {
     if (edited) {
       const newText = ref.current.innerText;
       if (newText !== text) {
-        console.log(newText);
-
         updateContent({
           id: corectWordObj.id,
           page: corectWordObj.page,

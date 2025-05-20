@@ -25,8 +25,8 @@ export default function MainPage() {
 
   return (
     <div>
-      <div className="l-100vh w-full lg:flex lg:h-fit lg:flex-row lg:gap-3 lg:text-black">
-        <div className="flex flex-col gap-3 p-7 pt-25 text-black lg:h-full lg:w-1/2">
+      <div className="w-100vh w-full lg:flex lg:h-fit lg:flex-row lg:gap-3 pt-55 lg:text-black">
+        <div className="flex flex-col gap-3 p-7 text-black lg:h-full lg:w-1/2">
           <AnimatedOnScrollSection>
             <div className="rounded-xl bg-white p-5 text-center shadow-xl">
               <h1 className="m-2 text-2xl lg:text-4xl">
@@ -61,7 +61,7 @@ export default function MainPage() {
           </AnimatedOnScrollSection>
         </div>
 
-        <div className="flex flex-col gap-3 p-7 pt-0 text-black lg:h-full lg:w-1/2 lg:pt-25">
+        <div className="flex flex-col gap-3 p-7 pt-0 text-black lg:h-full lg:w-1/2">
           <AnimatedOnScrollSection>
             <div>
               <h1 className="rounded-xl p-5 text-left text-2xl font-bold text-white lg:text-4xl">

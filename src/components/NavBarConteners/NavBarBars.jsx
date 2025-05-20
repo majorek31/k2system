@@ -22,7 +22,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"25ms"}
         where={"/delivery"}
       >
-        {/* {delivery} */}
+       <SingleWord  whichOne={"DeliverLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -30,7 +30,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"50ms"}
         where={"/about"}
       >
-        {/* {aboutUs} */}
+        <SingleWord  whichOne={"AboutUsLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -38,7 +38,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"75ms"}
         where={"/service"}
       >
-        {/* {service} */}
+        <SingleWord  whichOne={"ServiceLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -46,7 +46,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"100ms"}
         where={"/contact"}
       >
-        {/* {contact} */}
+        <SingleWord  whichOne={"ContactLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -54,7 +54,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"125ms"}
         where={"/register"}
       >
-        {/* {register} */}
+        <SingleWord  whichOne={"RegisterLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -62,7 +62,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"150ms"}
         where={"/shop"}
       >
-        {/* {shop} */}
+        <SingleWord  whichOne={"ShopLink"} whichContent={"NavBar"} />
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -70,7 +70,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"175ms"}
         where={"/rateForm"}
       >
-        {/* {rateForm} */}
+        rateForm - nie ma w bazie
       </SingleBar>
       <SingleBar
         showContentForNav={showContentForNav}
@@ -78,7 +78,7 @@ function NavBarBars({ showContentForNav }) {
         v2={"200ms"}
         where={"/settings"}
       >
-        {/* {settings} */}
+        <SingleWord  whichOne={"SettingsLink"} whichContent={"NavBar"} />
       </SingleBar>
     </div>
   );
