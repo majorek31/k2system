@@ -15,9 +15,22 @@ import ContactContainer from "./mainPageConteners/ContactContainer";
 import SubscribeContainer from "./mainPageConteners/SubscribeContainer";
 import DetailContainer from "./mainPageConteners/DetailContainer";
 import RateContainer from "./mainPageConteners/RateContainer";
+import SingleWord from "../components/SingleWord";
+import ShowRates from "./ratePageConteners/ShowRates";
+import { useFetch } from "../hooks/useFetch";
 
 export default function MainPage() {
   const [activeModal, setActiveModal] = useState(null);
+
+  const { data, isPending, doFetch } = useFetch()
+  useEffect(() => {
+
+    doFetch("http://localhost:5000/review", {
+      method: "GET"
+    })
+  }, [])
+
+  const sortedData = data ? [...data].sort((a, b) => b.rating - a.rating) : []
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -209,40 +222,14 @@ export default function MainPage() {
 
       <AnimatedOnScrollSection>
         <div>
-          <h1 className="m-50 p-5 text-center text-2xl font-bold text-white lg:text-4xl">
+          <h1 className="m-25 mt-50 p-5 text-center text-2xl font-bold text-white lg:text-4xl">
             Oceny naszych użytkowników:
           </h1>
         </div>
       </AnimatedOnScrollSection>
 
-      <div
-        className={"mb-50 flex w-full flex-col gap-10 lg:flex-row lg:flex-wrap"}
-      >
-        <RateContainer
-          userName={"nazwa_uzytkownika"}
-          text={
-            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis nulla soluta, libero qui quod rerum ipsa doloremque excepturi, unde animi culpa natus atque aliquid deleniti! Eos iusto ipsa, quae reprehenderit blanditiis excepturi at repellat ipsam ut cum beatae asperiores velit quam consequatur dolores quos accusamus quidem, dignissimos dolorem animi. Magni."
-          }
-        />
-        <RateContainer
-          userName={"nazwa_uzytkownika"}
-          text={
-            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis nulla soluta, libero qui quod rerum ipsa doloremque excepturi, unde animi culpa natus atque aliquid deleniti! Eos iusto ipsa, quae reprehenderit blanditiis excepturi at repellat ipsam ut cum beatae asperiores velit quam consequatur dolores quos accusamus quidem, dignissimos dolorem animi. Magni."
-          }
-        />
-        <RateContainer
-          userName={"nazwa_uzytkownika"}
-          text={
-            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis nulla soluta, libero qui quod rerum ipsa doloremque excepturi, unde animi culpa natus atque aliquid deleniti! Eos iusto ipsa, quae reprehenderit blanditiis excepturi at repellat ipsam ut cum beatae asperiores velit quam consequatur dolores quos accusamus quidem, dignissimos dolorem animi. Magni."
-          }
-        />
-        <RateContainer
-          userName={"nazwa_uzytkownika"}
-          text={
-            "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis nulla soluta, libero qui quod rerum ipsa doloremque excepturi, unde animi culpa natus atque aliquid deleniti! Eos iusto ipsa, quae reprehenderit blanditiis excepturi at repellat ipsam ut cum beatae asperiores velit quam consequatur dolores quos accusamus quidem, dignissimos dolorem animi. Magni."
-          }
-        />
-      </div>
+      <ShowRates data={sortedData} isPending={isPending} limit={true}/>
+
       <AnimatePresence>
         {activeModal && (
           <AnimatedDetailOnClick setActiveModal={setActiveModal}>

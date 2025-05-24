@@ -2,8 +2,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-export default function AnimationOnNavigate({ children, setActiveModal }) {
-    const navigate = useNavigate();
+export default function AnimationOnNavigate({ children, setActiveModal1,setActiveModal2 }) {
   return (
     <motion.div
       className="fixed top-0 left-0 h-screen w-screen bg-[rgba(0,0,0,0.5)] z-[100]"
@@ -11,7 +10,7 @@ export default function AnimationOnNavigate({ children, setActiveModal }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      onClick={() => (setActiveModal(null),navigate("/"))}
+      onClick={() => (setActiveModal1(false),setActiveModal2(false))}
     >
       <motion.div
         className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-6 shadow-lg"

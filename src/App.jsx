@@ -18,8 +18,13 @@ import ShopPage from "./pages/ShopPage";
 import LandingPage from "./components/LandingPage";
 import RatePage from "./pages/RatePage";
 
+import AnimationOnNavigate from "./animations/AnimationOnNavigate";
+import { AnimatePresence } from "framer-motion";
+import { useUserInfo } from "./hooks/useContext/useUserInfo";
+
 function App() {
   const boxRef = useRef(null);
+  const {showLogInfo, setShowLogInfo, showLogOutInfo, setShowLogOutInfo } = useUserInfo();
   const [showNavBar, setShowNavBar] = useState(false);
 
   return (
@@ -47,6 +52,18 @@ function App() {
         </BrowserRouter>
         <FooterPage />
       </div>
+      <AnimatePresence>
+        {showLogInfo && (
+          <AnimationOnNavigate setActiveModal1={setShowLogInfo} setActiveModal2={setShowLogOutInfo}>
+            <p>Zostałeś zalogowany</p>
+          </AnimationOnNavigate>
+        )}
+        {showLogOutInfo && (
+          <AnimationOnNavigate setActiveModal1={setShowLogInfo} setActiveModal2={setShowLogOutInfo}>
+            <p>Zostałeś wylogowany!</p>
+          </AnimationOnNavigate>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

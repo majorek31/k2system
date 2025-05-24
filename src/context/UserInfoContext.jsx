@@ -6,18 +6,29 @@ export const UserInfoContext = createContext();
 export function UserInfoProvider({ children }) {
   const [isLogged, setIsLogged] = useState(false);
   const [isAdmin, setIsAdmin] = useState(true);
-  const [userInfo, setUserInfo] = useState(
-    localStorage.getItem("userData")
-      ? JSON.parse(localStorage.getItem("userData"))
-      : null,
-  );
+  const [showLogInfo, setShowLogInfo] = useState(false);
+  const [showLogOutInfo, setShowLogOutInfo] = useState(false);
+  const [userInfo, setUserInfo] = useState(() => {
+    const storedData = localStorage.getItem("userData");
+    return storedData ? JSON.parse(storedData) : null;
+  });
+
+  const [loginData, setLoginData] = useState(() => {
+    const storedData = localStorage.getItem("loginData");
+    return storedData ? JSON.parse(storedData) : null;
+  });
+
+  const [userDecodedInfo, setUserDecodedInfo] = useState(() => {
+    const storedData = localStorage.getItem("decodedData");
+    return storedData ? JSON.parse(storedData) : null;
+  });
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+    const admin = userInfo?.scopes?.some(scope => scope.value === "admin")
 
-    if (userInfo || token) {
+    if (userInfo) {
       setIsLogged(true);
-      if (token) {
+      if (admin) {
         setIsAdmin(true);
       } else {
         setIsAdmin(false);
@@ -29,18 +40,19 @@ export function UserInfoProvider({ children }) {
   }, [userInfo]);
 
   useEffect(() => {
-    console.log("Admin:", isAdmin, "Logged:", isLogged, "UserInfo:", userInfo);
-  }, [isAdmin, isLogged, userInfo]);
+    console.log("Admin:", isAdmin, "Logged:", isLogged, "UserInfo:", userInfo, "loginData", loginData, "userDecodedInfo", userDecodedInfo);
+  }, [isAdmin, isLogged, userInfo, loginData]);
 
   return (
     <UserInfoContext.Provider
       value={{
-        isLogged,
-        setIsLogged,
-        isAdmin,
-        setIsAdmin,
-        setUserInfo,
-        userInfo,
+        isLogged, setIsLogged,
+        isAdmin, setIsAdmin,
+        userInfo, setUserInfo,
+        showLogInfo, setShowLogInfo,
+        showLogOutInfo, setShowLogOutInfo,
+        loginData, setLoginData,
+        userDecodedInfo, setUserDecodedInfo
       }}
     >
       {children}

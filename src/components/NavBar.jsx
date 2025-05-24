@@ -25,7 +25,9 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
 
   useEffect(() => {
     scrollY >= height ? setShowNavBar(true) : setShowNavBar(false),
-      setShowContentForNav(false);
+      setShowContentForNav(false),
+      setShowContentForAccountDetails(false),
+      setShowContentForShoppingList(false)
   }, [scrollY, height]);
 
   function handleToggleWithDelay({
@@ -49,13 +51,13 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
     }
   }
 
-    useEffect(() => {
-      if (showUsers) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-    }, [showUsers]);
+  useEffect(() => {
+    if (showUsers) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [showUsers]);
 
   return (
     <Fragment>

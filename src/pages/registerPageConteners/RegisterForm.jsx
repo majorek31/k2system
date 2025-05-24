@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Input from "./Input";
 import Radio from "./Radio";
+import { useFetch } from "../../hooks/useFetch";
 import AniamtedOnChangeOpacity from "../../animations/AniamtedOnChangeOpacity";
 import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick";
 
@@ -35,6 +36,12 @@ export default function registerForm() {
   const [msgFirmaNazwa, setMsgFirmaNazwa] = useState("");
 
   const [visible, setVisible] = useState(true);
+
+  const { doFetch: loginFetch } = useFetch(
+    null,
+    { method: "POST" },
+    true,
+  );
 
   const checkRegExNip = (val) => {
     val = val.trim();
@@ -193,7 +200,7 @@ export default function registerForm() {
     console.log(msgPasswrodDoubleCheck);
   };
 
-  const sendData = () => {
+  const sendDataP = () => {
     if (
       msgFirstName === "" &&
       firstName !== "" &&
@@ -207,20 +214,63 @@ export default function registerForm() {
       passwordDoubleCheck !== ""
     ) {
       const data = {
-        firstName,
-        lastName,
-        emailVal,
-        password,
-        passwordDoubleCheck,
-      };
+        "email": emailVal,
+        "firstName": firstName,
+        "lastName": lastName,
+        "password": password,
+        "userType": "personal",
+        "vatNumber": null,
+        "companyName": null
+      }
       console.log(data);
       setShowFinalInormationContainer(true);
       setShowErrorContainer(false);
-      // setFirstName("");
-      // setLastName("");
-      // setEmailVal("");
-      // setPassword("");
-      // setPasswordDoubleCheck("");
+
+      loginFetch("http://localhost:5000/auth/register", {
+        method: "POST",
+        body: data,
+      });
+      console.log("konto załozone")
+    } else {
+      setShowErrorContainer(true);
+      setShowFinalInormationContainer(false);
+    }
+  }
+  const sendDataC = () => {
+    if (
+      msgFirstName === "" &&
+      firstName !== "" &&
+      msgLastName === "" &&
+      lastName !== "" &&
+      msgEmail === "" &&
+      emailVal !== "" &&
+      msgPasswrod === "" &&
+      password !== "" &&
+      msgPasswrodDoubleCheck === "" &&
+      passwordDoubleCheck !== "" &&
+      msgNip === "" &&
+      nip !== "" &&
+      firmaNazwa !== "" &&
+      msgFirmaNazwa === ""
+    ) {
+      const data = {
+        "email": emailVal,
+        "firstName": firstName,
+        "lastName": lastName,
+        "password": password,
+        "userType": "company",
+        "vatNumber": nip,
+        "companyName": firmaNazwa
+      }
+      console.log(data);
+      setShowFinalInormationContainer(true);
+      setShowErrorContainer(false);
+
+      loginFetch("http://localhost:5000/auth/register", {
+        method: "POST",
+        body: data,
+      });
+      console.log("konto załozone")
     } else {
       setShowErrorContainer(true);
       setShowFinalInormationContainer(false);
@@ -277,7 +327,7 @@ export default function registerForm() {
   return (
     <form
       className="m-5 flex flex-col items-center justify-center gap-15 p-5"
-      onSubmit={(e) => (e.preventDefault(), sendData())}
+      onSubmit={(e) => (e.preventDefault(), selectedType === "osoba" ? sendDataP() : sendDataC())}
     >
       <div className="flex gap-15">
         <Radio
@@ -413,6 +463,7 @@ export default function registerForm() {
       <button
         type="submit"
         className="m-5 rounded border-3 border-slate-700 bg-white p-5 pr-10 pl-10 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-120 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-140"
+
       >
         Register
       </button>

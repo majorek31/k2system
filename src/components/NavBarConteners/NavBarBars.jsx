@@ -4,7 +4,6 @@ import SingleWord from "../SingleWord";
 import { useUserInfo } from "../../hooks/useContext/useUserInfo";
 
 function NavBarBars({ showContentForNav }) {
-  const { isLogged } = useUserInfo();
 
   return (
     <div
@@ -82,16 +81,6 @@ function NavBarBars({ showContentForNav }) {
       >
         <SingleWord whichOne={"SettingsLink"} whichContent={"NavBar"} />
       </SingleBar>
-      {isLogged && (
-        <SingleBar
-          showContentForNav={showContentForNav}
-          v1={"900ms"}
-          v2={"225ms"}
-          where={"/settings"}
-        >
-          Wyloguj - nie ma w bazie
-        </SingleBar>
-      )}
     </div>
   );
 }

@@ -6,7 +6,7 @@ function AccountDetails({
   setShowContentForAccountDetails,
   setShowUsers,
 }) {
-  const { isLogged, isAdmin, userInfo } = useUserInfo();
+  const { isLogged, isAdmin, userInfo, setUserInfo, setShowLogOutInfo } = useUserInfo();
   return (
     <div>
       <div
@@ -20,6 +20,8 @@ function AccountDetails({
                 <p className="p-1">{userInfo.firstName}</p>
                 <p className="p-1">{userInfo.lastName}</p>
                 <p className="p-1">{userInfo.email}</p>
+                {userInfo.vatNumber !== null && <p>{userInfo.vatNumber}</p>}
+                {userInfo.companyName !== null && <p>{userInfo.companyName}</p>}
               </div>
             )}
             {isAdmin && (
@@ -40,6 +42,12 @@ function AccountDetails({
                 </button>
               </div>
             )}
+            <button
+              onClick={() => (localStorage.clear(), setUserInfo(""), setShowLogOutInfo(true))}
+              className="rounded border-3 border-slate-700 bg-white p-5 text-slate-700 shadow transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125"
+            >
+              Wyloguj
+            </button>
           </div>
         )}
         {!isLogged && (
