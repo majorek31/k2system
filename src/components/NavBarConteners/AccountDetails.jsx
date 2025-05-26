@@ -5,8 +5,18 @@ function AccountDetails({
   showContentForAccountDetails,
   setShowContentForAccountDetails,
   setShowUsers,
+  setInfo,
+  setShowInfo,
 }) {
-  const { isLogged, isAdmin, userInfo, setUserInfo, setShowLogOutInfo } = useUserInfo();
+  const {
+    isLogged,
+    isAdmin,
+    userInfo,
+    setUserInfo,
+    setShowLogOutInfo,
+    isEditable,
+    setIsEditable,
+  } = useUserInfo();
   return (
     <div>
       <div
@@ -27,7 +37,13 @@ function AccountDetails({
             {isAdmin && (
               <div className="m-5 flex flex-col gap-4">
                 <button
-                  onClick={() => setShowContentForAccountDetails(false)}
+                  onClick={() => (
+                    setShowContentForAccountDetails(false),
+                    setIsEditable(!isEditable),
+                    localStorage.setItem("isEditable",!isEditable),
+                    setInfo("Jesteś w trybie edycji"),
+                    setShowInfo(true)
+                  )}
                   className="rounded border-3 border-slate-700 bg-white p-5 pr-10 pl-10 text-slate-700 shadow transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125"
                 >
                   Włącz tryb edycji
@@ -43,7 +59,9 @@ function AccountDetails({
               </div>
             )}
             <button
-              onClick={() => (localStorage.clear(), setUserInfo(""), setShowLogOutInfo(true))}
+              onClick={() => (
+                localStorage.clear(), setUserInfo(""), setShowLogOutInfo(true)
+              )}
               className="rounded border-3 border-slate-700 bg-white p-5 text-slate-700 shadow transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125"
             >
               Wyloguj

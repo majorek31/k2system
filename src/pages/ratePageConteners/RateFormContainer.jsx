@@ -1,67 +1,72 @@
-import { useState } from "react"
-import StarRate from "./StarRate"
-import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick"
-import { AnimatePresence } from "framer-motion"
-import { useUserInfo } from "../../hooks/useContext/useUserInfo"
-import { useFetch } from "../../hooks/useFetch"
+import { useState } from "react";
+import StarRate from "./StarRate";
+import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick";
+import { AnimatePresence } from "framer-motion";
+import { useUserInfo } from "../../hooks/useContext/useUserInfo";
+import { useFetch } from "../../hooks/useFetch";
+import { useValidToken } from "../../hooks/useValidToken";
 
 export default function RateFormContainer({ onReviewAdded }) {
-  const [rating, setRating] = useState(0)
-  const [textAreaVal, setTextAreaVal] = useState("")
-  const [msgTextAreaVal, setMsgTextAreaVal] = useState("")
-  const [showFinal, setShowFinal] = useState(false)
-  const [showError, setShowError] = useState(false)
-  const { isLogged } = useUserInfo()
-  const { doFetch } = useFetch()
+  const [rating, setRating] = useState(0);
+  const [textAreaVal, setTextAreaVal] = useState("");
+  const [msgTextAreaVal, setMsgTextAreaVal] = useState("");
+  const [showFinal, setShowFinal] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const { isLogged } = useUserInfo();
+  const { doFetch } = useFetch();
+  const { getToken } = useValidToken();
 
-  const checkRegEx = (val) => /^[^<>/&"'`]*$/.test(val.trim())
+  const checkRegEx = (val) => /^[^<>/&"'`]*$/.test(val.trim());
 
   const sendData = async () => {
     if (isLogged && rating !== 0 && textAreaVal && checkRegEx(textAreaVal)) {
+      const token = await getToken();
+      if (!token) return;
+
       doFetch("http://localhost:5000/review", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem("loginData")).accessToken}`,
+          Authorization: `Bearer ${token}`,
         },
         body: {
-          "content": textAreaVal,
-          "rating": rating,
+          content: textAreaVal,
+          rating: rating,
         },
-      })
+      });
 
-      setShowFinal(true)
-      setShowError(false)
-      setMsgTextAreaVal("")
-      setTextAreaVal("")
-      setRating(0)
-      if (onReviewAdded) onReviewAdded()
+      setShowFinal(true);
+      setShowError(false);
+      setMsgTextAreaVal("");
+      setTextAreaVal("");
+      setRating(0);
+      if (onReviewAdded) onReviewAdded();
     } else {
-      setShowError(true)
-      setShowFinal(false)
+      setShowError(true);
+      setShowFinal(false);
       setMsgTextAreaVal(
         !isLogged
           ? "Musisz być zalogowany"
           : !textAreaVal
             ? "Treść opinii nie może być pusta"
-            : "Opinia zawiera niedozwolone znaki (np. < > / &)"
-      )
+            : "Opinia zawiera niedozwolone znaki (np. < > / &)",
+      );
     }
-  }
+  };
 
   return (
     <form
       onSubmit={(e) => {
-        e.preventDefault()
-        sendData()
+        e.preventDefault();
+        sendData();
       }}
-      className="m-5 mb-25 mt-50 flex h-fit w-[70wh] flex-col items-start justify-center gap-5 rounded-xl bg-white p-10 shadow"
+      className="m-5 mt-50 mb-25 flex h-fit w-[70wh] flex-col items-start justify-center gap-5 rounded-xl bg-white p-10 shadow"
     >
       <p className="p-1 text-xl text-black">Opinia: </p>
       <textarea
         value={textAreaVal}
         onChange={(e) => setTextAreaVal(e.target.value)}
         rows="4"
-        className="h-40 block w-full rounded-lg border border-gray-200 bg-slate-700 p-3 text-sm text-gray-100"
+        className="block h-40 w-full rounded-lg border border-gray-200 bg-slate-700 p-3 text-sm text-gray-100"
         placeholder="Napisz opinię na temat naszych usług :)"
       />
       <StarRate rating={rating} setRating={setRating} rateSetting={true} />
@@ -93,5 +98,5 @@ export default function RateFormContainer({ onReviewAdded }) {
         )}
       </AnimatePresence>
     </form>
-  )
+  );
 }

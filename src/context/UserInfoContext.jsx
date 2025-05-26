@@ -5,9 +5,14 @@ export const UserInfoContext = createContext();
 
 export function UserInfoProvider({ children }) {
   const [isLogged, setIsLogged] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [showLogInfo, setShowLogInfo] = useState(false);
   const [showLogOutInfo, setShowLogOutInfo] = useState(false);
+  const [languageInUse, setLanguageInUse] = useState(() => {
+    const storedData = localStorage.getItem("lang");
+    return storedData ? storedData : localStorage.setItem("lang","en");
+  });
+
   const [userInfo, setUserInfo] = useState(() => {
     const storedData = localStorage.getItem("userData");
     return storedData ? JSON.parse(storedData) : null;
@@ -23,8 +28,13 @@ export function UserInfoProvider({ children }) {
     return storedData ? JSON.parse(storedData) : null;
   });
 
+  const [isEditable, setIsEditable] = useState(() => {
+    const storedData = localStorage.getItem("isEditable");
+    return storedData ? storedData : localStorage.setItem("isEditable",false);
+  });
+
   useEffect(() => {
-    const admin = userInfo?.scopes?.some(scope => scope.value === "admin")
+    const admin = userInfo?.scopes?.some((scope) => scope.value === "admin");
 
     if (userInfo) {
       setIsLogged(true);
@@ -40,19 +50,41 @@ export function UserInfoProvider({ children }) {
   }, [userInfo]);
 
   useEffect(() => {
-    console.log("Admin:", isAdmin, "Logged:", isLogged, "UserInfo:", userInfo, "loginData", loginData, "userDecodedInfo", userDecodedInfo);
+    console.log(
+      "Admin:",
+      isAdmin,
+      "Logged:",
+      isLogged,
+      "UserInfo:",
+      userInfo,
+      "loginData",
+      loginData,
+      "userDecodedInfo",
+      userDecodedInfo,
+    );
   }, [isAdmin, isLogged, userInfo, loginData]);
 
   return (
     <UserInfoContext.Provider
       value={{
-        isLogged, setIsLogged,
-        isAdmin, setIsAdmin,
-        userInfo, setUserInfo,
-        showLogInfo, setShowLogInfo,
-        showLogOutInfo, setShowLogOutInfo,
-        loginData, setLoginData,
-        userDecodedInfo, setUserDecodedInfo
+        isLogged,
+        setIsLogged,
+        isAdmin,
+        setIsAdmin,
+        userInfo,
+        setUserInfo,
+        showLogInfo,
+        setShowLogInfo,
+        showLogOutInfo,
+        setShowLogOutInfo,
+        loginData,
+        setLoginData,
+        userDecodedInfo,
+        setUserDecodedInfo,
+        isEditable,
+        setIsEditable,
+        languageInUse,
+        setLanguageInUse,
       }}
     >
       {children}

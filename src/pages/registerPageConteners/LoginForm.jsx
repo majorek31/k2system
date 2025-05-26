@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import Input from "./Input";
 import { useFetch } from "../../hooks/useFetch";
 import { useUserInfo } from "../../hooks/useContext/useUserInfo";
-import * as jose from "jose"
+import { useValidToken } from "../../hooks/useValidToken";
+import * as jose from "jose";
 
 export default function RegisterForm() {
   const [emailVal, setEmailVal] = useState("");
@@ -13,8 +14,14 @@ export default function RegisterForm() {
 
   const [passwordDoubleCheck, setPasswordDoubleCheck] = useState("");
   const [msgPasswordDoubleCheck, setMsgPasswordDoubleCheck] = useState("");
-  const { setUserInfo, setShowLogInfo, setShowLogOutInfo,setLoginData,setUserDecodedInfo } = useUserInfo();
-
+  const {
+    setUserInfo,
+    setShowLogInfo,
+    setShowLogOutInfo,
+    setLoginData,
+    setUserDecodedInfo,
+  } = useUserInfo();
+  const { getToken } = useValidToken();
 
   const { data: loginData, doFetch: loginFetch } = useFetch(
     null,
@@ -34,42 +41,37 @@ export default function RegisterForm() {
   };
 
   useEffect(() => {
-    if (loginData) {
+    const fetchUserData = async () => {
+      if (loginData) {
+        const decoded = jose.decodeJwt(loginData.accessToken);
 
-      const decoded = jose.decodeJwt(loginData.accessToken)
-      const unixTimestamp = Math.floor(Date.now() / 1000);
-
-      if (unixTimestamp < decoded.exp) {
-
-        setShowLogInfo(true)
-        setShowLogOutInfo(false)
+        setShowLogInfo(true);
+        setShowLogOutInfo(false);
 
         localStorage.setItem("loginData", JSON.stringify(loginData));
         localStorage.setItem("decodedData", JSON.stringify(decoded));
 
-        setLoginData(loginData)
-        setUserDecodedInfo(decoded)
+        setLoginData(loginData);
+        setUserDecodedInfo(decoded);
+
+        const token = await getToken();
+        if (!token) return;
 
         userFetch("http://localhost:5000/user/me", {
           method: "GET",
           headers: {
-            Authorization: loginData ? `Bearer ${loginData.accessToken}` : "",
+            Authorization: `Bearer ${token}`,
           },
         });
-
-      } else {
-
-        loginFetch("http://localhost:5000/auth/refresh?Token=" + loginData.refreshToken);
-
       }
-    }
+    };
+
+    fetchUserData();
   }, [loginData]);
 
   useEffect(() => {
     if (userData) {
-
       localStorage.setItem("userData", JSON.stringify(userData));
-      
       setUserInfo(userData);
     }
   }, [userData]);

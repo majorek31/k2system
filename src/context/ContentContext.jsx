@@ -1,58 +1,53 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { useFetch } from "../hooks/useFetch";
+import { useValidToken } from "../hooks/useValidToken";
+import { useUserInfo } from "../hooks/useContext/useUserInfo";
 
 export const ContentContext = createContext();
 
 export const ContentProvider = ({ children }) => {
   const [endpoint, setEndpoint] = useState(null);
+  const { isAdmin, isEditable, languageInUse } = useUserInfo();
   const baseUrl = "http://localhost:5000/content";
-  const url = endpoint ? `${baseUrl}/${endpoint}` : null;
+  const url = endpoint && languageInUse ? `${baseUrl}/${endpoint}?lang=${languageInUse}` : null;
 
   const { data, isPending, error, doFetch } = useFetch(url, { method: "GET" }, true);
   const { doFetch: doUpdate } = useFetch();
+  const { getToken } = useValidToken();
 
-  const loginData = JSON.parse(localStorage.getItem("loginData"));
-  const decodedData = JSON.parse(localStorage.getItem("decodedData"));
-
-  const refreshToken = async () => {
-    const res = await fetch(`http://localhost:5000/auth/refresh?Token=${loginData.refreshToken}`);
-    if (!res.ok) return null;
-    const json = await res.json();
-    localStorage.setItem("loginData", json.accessToken);
-    localStorage.setItem("loginData", JSON.stringify({ ...loginData, accessToken: json.accessToken, exp: json.exp }));
-    return json.accessToken;
-  };
+  useEffect(() => {
+    if (endpoint && languageInUse) {
+      doFetch(`${baseUrl}/${endpoint}?lang=${languageInUse}`, {
+        method: "GET",
+      });
+    }
+  }, [endpoint, languageInUse]);
 
   const fetchContent = async (newEndpoint) => {
-    setEndpoint(newEndpoint);
     if (!newEndpoint) return;
-    await doFetch(`${baseUrl}/${newEndpoint}`, { method: "GET" });
+    setEndpoint(newEndpoint);
   };
 
   const updateContent = async (updatedData) => {
     if (!endpoint || !updatedData.key) return null;
 
-    let token = loginData.accessToken;
-    const now = Math.floor(Date.now() / 1000);
-    if (decodedData.exp < now) {
-      token = await refreshToken();
-      if (!token) return null;
-    }
+    const token = await getToken();
+    if (!token) return null;
 
-    const putUrl = `${baseUrl}/${endpoint}/${updatedData.key}`;
+    const putUrl = `${baseUrl}/${endpoint}/${updatedData.key}?lang=${languageInUse}`;
 
     await doUpdate(putUrl, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: updatedData, 
+      body: updatedData,
     });
 
-    await doFetch(url, {
+    // Odśwież dane
+    doFetch(`${baseUrl}/${endpoint}?lang=${languageInUse}`, {
       method: "GET",
-      headers: { Authorization: `Bearer ${token}` }
     });
   };
 

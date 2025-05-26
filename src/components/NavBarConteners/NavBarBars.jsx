@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import SingleBar from "../SingleBar";
 import SingleWord from "../SingleWord";
-import { useUserInfo } from "../../hooks/useContext/useUserInfo";
 
 function NavBarBars({ showContentForNav }) {
 

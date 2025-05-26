@@ -4,21 +4,18 @@ import { useUserInfo } from "../hooks/useContext/useUserInfo";
 
 export default function SingleWord({ whichOne, whichContent }) {
   const { data, isPending, error, fetchContent, updateContent } = useContent();
-  const { isAdmin } = useUserInfo();
+  const { isAdmin, isEditable,languageInUse } = useUserInfo();
   const [corectWord, setCorectWord] = useState("");
-  const [corectWordObj, setCorectWordObj] = useState({});
-  const fetchedOnce = useRef(false);
+  const [corectWordObj, setCorectWordObj] = useState(null);
   const [edited, setEdited] = useState(false);
-  const text = corectWord;
-  const inEdit = true;
+  const [inEdit, setInEdit] = useState(true);
   const ref = useRef();
 
   useEffect(() => {
-    if (!fetchedOnce.current) {
+    if (whichContent) {
       fetchContent(whichContent);
-      fetchedOnce.current = true;
     }
-  }, [fetchContent, whichContent]);
+  }, [whichContent]);
 
   useEffect(() => {
     if (!isPending && !error && data) {
@@ -27,22 +24,26 @@ export default function SingleWord({ whichOne, whichContent }) {
         setCorectWord(wordObj.content);
         setCorectWordObj(wordObj);
       } else {
-        setCorectWord(null);
+        setCorectWord("");
         setCorectWordObj(null);
       }
     }
   }, [data, isPending, error, whichOne]);
 
-  const onBlur = () => {
-    if (edited) {
-      const newText = ref.current.innerText;
-      if (newText !== text) {
-        updateContent({
+  const onBlur = async () => {
+    if (edited && ref.current) {
+      const newText = ref.current.textContent;
+      if (newText !== corectWord && corectWordObj) {
+        await updateContent({
           id: corectWordObj.id,
           page: corectWordObj.page,
           key: corectWordObj.key,
           content: newText,
         });
+        // Odśwież dane po update
+        if (whichContent && fetchContent) {
+          fetchContent(whichContent);
+        }
       }
       setEdited(false);
     }
@@ -51,11 +52,10 @@ export default function SingleWord({ whichOne, whichContent }) {
   return (
     <div>
       {isPending && <p>Loading...</p>}
-      {data &&
-        (isAdmin ? (
-          !inEdit ? (
-            <span>{corectWord}</span>
-          ) : (
+      {!isPending && error && <p style={{ color: "red" }}>Błąd: {error}</p>}
+      {!isPending && !error && (
+        <>
+          {isAdmin && isEditable && inEdit ? (
             <span
               onBlur={onBlur}
               onInput={() => setEdited(true)}
@@ -65,10 +65,11 @@ export default function SingleWord({ whichOne, whichContent }) {
             >
               {corectWord}
             </span>
-          )
-        ) : (
-          <span>{corectWord}</span>
-        ))}
+          ) : (
+            <span>{corectWord || "Brak treści"}</span>
+          )}
+        </>
+      )}
     </div>
   );
 }
