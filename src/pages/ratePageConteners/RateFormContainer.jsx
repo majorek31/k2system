@@ -23,7 +23,7 @@ export default function RateFormContainer({ onReviewAdded }) {
       const token = await getToken();
       if (!token) return;
 
-      doFetch("http://localhost:5000/review", {
+      doFetch("/review", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -226,7 +226,7 @@ export default function registerForm() {
       setShowFinalInormationContainer(true);
       setShowErrorContainer(false);
 
-      loginFetch("http://localhost:5000/auth/register", {
+      loginFetch("/auth/register", {
         method: "POST",
         body: data,
       });
@@ -266,7 +266,7 @@ export default function registerForm() {
       setShowFinalInormationContainer(true);
       setShowErrorContainer(false);
 
-      loginFetch("http://localhost:5000/auth/register", {
+      loginFetch("/auth/register", {
         method: "POST",
         body: data,
       });

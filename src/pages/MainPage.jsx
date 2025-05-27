@@ -25,7 +25,7 @@ export default function MainPage() {
   const { data, isPending, doFetch } = useFetch()
   useEffect(() => {
 
-    doFetch("http://localhost:5000/review", {
+    doFetch("/review", {
       method: "GET"
     })
   }, [])

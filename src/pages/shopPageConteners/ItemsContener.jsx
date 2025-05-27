@@ -26,9 +26,11 @@ export default function ItemsContener({ data, isPending, onProductDeleted }) {
         />
       ))}
 
+      {/* animacja wyjscia sie jebie */}
       {selectedItem && (
-        <AnimatedDetailOnClick setActiveModal={handleClose} >
+        <AnimatedDetailOnClick setActiveModal={setSelectedItem} >
           <SingleItemDetail
+            setSelectedItem={setSelectedItem}
             el={selectedItem}
           />
         </AnimatedDetailOnClick>

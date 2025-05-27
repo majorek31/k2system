@@ -28,14 +28,12 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
     useState(false);
   const [showContentForAccountDetails, setShowContentForAccountDetails] =
     useState(false);
-  const [showContentForShoppingList, setShowContentForShoppingList] =
-    useState(false);
   const [showFilterList, setShowFilterList] =
     useState(false);
   const { scrollY, height } = useAnimation();
   const { bGcolor } = useTheme();
   const { isAdmin } = useUserInfo();
-  const { setShowProductForm } = useShopInfo();
+  const { setShowProductForm,showContentForShoppingList,setShowContentForShoppingList } = useShopInfo();
 
   // check if navbar schould be visible
 

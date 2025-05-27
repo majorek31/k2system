@@ -8,7 +8,7 @@ export const ContentContext = createContext();
 export const ContentProvider = ({ children }) => {
   const [endpoint, setEndpoint] = useState(null);
   const { isAdmin, isEditable, languageInUse } = useUserInfo();
-  const baseUrl = "http://localhost:5000/content";
+  const baseUrl = "/content";
   const url = endpoint && languageInUse ? `${baseUrl}/${endpoint}?lang=${languageInUse}` : null;
 
   const { data, isPending, error, doFetch } = useFetch(url, { method: "GET" }, true);

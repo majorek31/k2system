@@ -16,7 +16,7 @@ export default function SingleItem({
   const Delete = async () => {
     const token = await getToken();
     if (!token) return;
-    DeleteSingleProduct(`http://localhost:5000/product/${productId}`, {
+    DeleteSingleProduct(`/product/${productId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,

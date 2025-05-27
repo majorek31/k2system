@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import Input from "../registerPageConteners/Input";
+import Radio from "../registerPageConteners/Radio";
 import { AnimatePresence } from "framer-motion";
 import { useFetch } from "../../hooks/useFetch";
 import { useValidToken } from "../../hooks/useValidToken";
 import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick";
 
-export default function AddProductForm({onProductAdded}) {
+export default function AddProductForm({ onProductAdded }) {
   const [nameVal, setNameVal] = useState("");
   const [msgNameVal, setMsgNameVal] = useState("");
 
@@ -19,9 +20,16 @@ export default function AddProductForm({onProductAdded}) {
   const [price, setPrice] = useState("");
   const [msgPrice, setMsgPrice] = useState("");
 
+  const [brand, setBrand] = useState("");
+  const [msgBrand, setMsgBrand] = useState("");
+
   const [imageUrl, setImageUrl] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
   const [msgImageUrls, setMsgImageUrls] = useState("");
+
+  const [selectedType, setSelectedType] = useState("Drukarka");
+
+  const [visible, setVisible] = useState(true);
 
   const [editorVal, setEditorVal] = useState("");
   const [msgEditorVal, setMsgEditorVal] = useState("");
@@ -39,6 +47,26 @@ export default function AddProductForm({onProductAdded}) {
     const div = document.createElement("div");
     div.innerHTML = html;
     return div.textContent || div.innerText || "";
+  };
+
+  const checkRegExBrand = (val) => {
+    val = val.trim();
+
+    const brandRegex = /^[a-zA-Z0-9\s]{3,}$/;
+
+    const msg1 = brandRegex.test(val)
+      ? ""
+      : "Nazwa produktu musi mieć co najmniej 3 znaki (litery, cyfry, spacje). ";
+
+    const msg2 = noHtmlCharsRegEx.test(val)
+      ? ""
+      : "Nazwa nie może zawierać znaków HTML (np. <, >, &, \", '). ";
+
+    const msg3 = noExtraSpacesRegEx.test(val)
+      ? ""
+      : "Nazwa nie może zaczynać się lub kończyć spacją. ";
+
+    setMsgBrand(msg1 + msg2 + msg3);
   };
 
   const checkRegExName = (val) => {
@@ -209,12 +237,22 @@ export default function AddProductForm({onProductAdded}) {
     checkRegExEditorVal(editorVal);
   }, [editorVal]);
 
+  useEffect(() => {
+    if (brand === "") {
+      setMsgBrand("");
+      return;
+    }
+    checkRegExBrand(brand);
+  }, [brand]);
+
   const sendData = async (e) => {
     const token = await getToken();
     if (!token) return;
 
     e.preventDefault();
     if (
+      msgBrand === "" &&
+      brand.trim() !== "" &&
       msgNameVal === "" &&
       nameVal.trim() !== "" &&
       msgSkuVal === "" &&
@@ -234,15 +272,17 @@ export default function AddProductForm({onProductAdded}) {
         sku: skuVal.trim(),
         quantityInStock: Number(quantityInStock),
         price: Number(price),
+        manufacturer: brand,
+        tag: selectedType,
         imageUrls: imageUrls,
       };
-      
+
       setShowFinalInormationContainer(true);
       setShowErrorContainer(false);
 
       if (onProductAdded) onProductAdded();
 
-      addProduct("http://localhost:5000/product", {
+      addProduct("/product", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -257,14 +297,14 @@ export default function AddProductForm({onProductAdded}) {
   };
 
   return (
-    <form onSubmit={sendData} className="max-h-[90vh] w-[65vw] overflow-auto overflow-x-hidden">
+    <form onSubmit={sendData} className="max-h-[90vh] w-[75vw] overflow-auto overflow-x-hidden">
       <div className="flex h-[90vh] flex-col justify-between">
         <h1 className="text-leftr p-5 text-5xl font-bold text-slate-700">
           Dodaj produkt !
         </h1>
 
         <div className="flex flex-col items-center justify-center p-5 lg:flex-row lg:justify-between">
-          <div className="flex flex-col gap-15 p-5">
+          <div className="flex flex-col justify-between p-5 h-full">
             <Input
               val={nameVal}
               msg={msgNameVal}
@@ -284,11 +324,17 @@ export default function AddProductForm({onProductAdded}) {
             >
               Ilość produktów
             </Input>
-          </div>
-
-          <div className="flex flex-col gap-15 p-5">
             <Input val={price} msg={msgPrice} setVal={setPrice} type="number">
               Cena
+            </Input>
+          </div>
+
+          <div className="flex flex-col justify-between p-5 h-full">
+            <Input val={price} msg={msgPrice} setVal={setPrice} type="number">
+              Cena
+            </Input>
+            <Input val={brand} msg={msgBrand} setVal={setBrand} type="text">
+              Marka
             </Input>
 
             <div className="flex items-center gap-10">
@@ -317,32 +363,79 @@ export default function AddProductForm({onProductAdded}) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 p-5 text-center">
+          <div className="flex flex-col gap-5 p-5 text-center h-full">
             <h1>Dodane obrazy:</h1>
-            <div className="flex h-45 max-h-45 w-40 flex-col gap-5 overflow-auto">
+            <div className="flex h-70 max-h-100 w-fit  flex-col gap-5 overflow-auto">
               {imageUrls.length === 0
                 ? "brak urlów"
                 : imageUrls.map((el, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between gap-3"
+                  <div
+                    key={i}
+                    className="flex items-center justify-between gap-3"
+                  >
+                    <p>{el.substring(0, 10) + "..."}</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageUrls(
+                          imageUrls.filter((_, index) => index !== i),
+                        );
+                        setMsgImageUrls("");
+                      }}
+                      className="rounded bg-slate-700 px-2 py-1 text-white transition hover:bg-red-800"
                     >
-                      <p>{el.substring(0, 10) + "..."}</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setImageUrls(
-                            imageUrls.filter((_, index) => index !== i),
-                          );
-                          setMsgImageUrls("");
-                        }}
-                        className="rounded bg-slate-700 px-2 py-1 text-white transition hover:bg-red-800"
-                      >
-                        Usuń
-                      </button>
-                    </div>
-                  ))}
+                      Usuń
+                    </button>
+                  </div>
+                ))}
             </div>
+          </div>
+          <div className="flex flex-col p-5 text-center justify-between items-left h-full">
+            <h1>Rodzaj produktu:</h1>
+            <Radio
+              name="manufacturer"
+              value="Drukarka"
+              checked={selectedType === "Drukarka"}
+              onChange={() => setSelectedType("Drukarka")}
+              onClick={() => (setVisible(true))}
+            >
+              <p className="text-lg">
+                Drukarka
+              </p>
+            </Radio>
+            <Radio
+              name="manufacturer"
+              value="Kserokopiarka"
+              checked={selectedType === "Kserokopiarka"}
+              onChange={() => setSelectedType("Kserokopiarka")}
+              onClick={() => (setVisible(true))}
+            >
+              <p className="text-lg">
+                Kserokopiarka 
+              </p>
+            </Radio>
+            <Radio
+              name="manufacturer"
+              value="kopiarka"
+              checked={selectedType === "kopiarka"}
+              onChange={() => setSelectedType("kopiarka")}
+              onClick={() => (setVisible(true))}
+            >
+              <p className="text-lg">
+                kopiarka
+              </p>
+            </Radio>
+            <Radio
+              name="manufacturer"
+              value="DrukarkaWielofunkcyjna"
+              checked={selectedType === "DrukarkaWielofunkcyjna"}
+              onChange={() => setSelectedType("DrukarkaWielofunkcyjna")}
+              onClick={() => (setVisible(true))}
+            >
+              <p className="text-lg whitespace-nowrap">
+                Drukarka Wielofunkcyjna
+              </p>
+            </Radio>
           </div>
         </div>
 
@@ -354,8 +447,7 @@ export default function AddProductForm({onProductAdded}) {
               menubar: false,
               width: "100%",
               height: 500,
-              plugins:
-                "advlist autolink lists link image charmap print preview anchor searchreplace visualblocks code fullscreen insertdatetime media table paste code help wordcount",
+              plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount",
               toolbar:
                 "undo redo | formatselect | bold italic backcolor | " +
                 "alignleft aligncenter alignright alignjustify | " +
@@ -363,6 +455,7 @@ export default function AddProductForm({onProductAdded}) {
             }}
             onEditorChange={(content) => setEditorVal(content)}
           />
+
 
           {msgEditorVal ? (
             <p className="mt-2 text-sm text-red-600">{msgEditorVal}</p>

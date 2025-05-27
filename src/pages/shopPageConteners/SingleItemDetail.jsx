@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import { useShopInfo } from '../../hooks/useContext/useShopInfo';
 
-export default function SingleItemDetail({ el }) {
+export default function SingleItemDetail({ el, setSelectedItem }) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [quantity, setQuantity] = useState(1); // Domyślnie 1 sztuka
+    const [quantity, setQuantity] = useState(1);
+
+    const { setProductsForOdrder, setShowContentForShoppingList } = useShopInfo()
 
 
     return (
@@ -61,7 +64,16 @@ export default function SingleItemDetail({ el }) {
                         dangerouslySetInnerHTML={{ __html: el.description }}
                     />
                     <p className="text-xl text-slate-700 font-bold p-5">{el.price}</p>
-                    <button className="ml-auto mr-auto rounded border-3 border-slate-700 bg-white p-2 pr-4 pl-4 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-120 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-140"
+                    <button onClick={() => (setProductsForOdrder(prev => [
+                        ...prev,
+                        {
+                            productId: el.id,
+                            quantity: quantity,
+                            name: el.name,
+                            image: el.productImages[0].imagePath
+                        }
+                    ]), setSelectedItem(null), setShowContentForShoppingList(true))}
+                        className="ml-auto mr-auto rounded border-3 border-slate-700 bg-white p-2 pr-4 pl-4 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-120 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-140"
                     >
                         Dodaj do koszyka
                     </button>

@@ -11,7 +11,7 @@ export const useValidToken = () => {
     if (decodedData.exp < now) {
         console.log("NOWY TOKEN")
       const res = await fetch(
-        `http://localhost:5000/auth/refresh?Token=${encodeURI(loginData.refreshToken)}`,
+        `/auth/refresh?Token=${encodeURIComponent(loginData.refreshToken)}`,
       );
       if (!res.ok) return null;
 

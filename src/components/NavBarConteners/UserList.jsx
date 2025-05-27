@@ -21,7 +21,7 @@ export default function UserList({ showUsers, setShowUsers }) {
         const token = await getToken();
         if (!token) return;
 
-        await doFetch("http://localhost:5000/user", {
+        await doFetch("/user", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

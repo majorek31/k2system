@@ -36,7 +36,7 @@ export default function RegisterForm() {
   );
 
   const login = (email, password) => {
-    const url = `http://localhost:5000/auth/login?email=${email}&password=${password}`;
+    const url = `/auth/login?email=${email}&password=${password}`;
     loginFetch(url);
   };
 
@@ -57,7 +57,7 @@ export default function RegisterForm() {
         const token = await getToken();
         if (!token) return;
 
-        userFetch("http://localhost:5000/user/me", {
+        userFetch("/user/me", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,

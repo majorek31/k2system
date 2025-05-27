@@ -8,7 +8,7 @@ export default function RatePage() {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   useEffect(() => {
-    doFetch("http://localhost:5000/review", {
+    doFetch("/review", {
       method: "GET"
     })
   }, [refreshTrigger])
