@@ -1,106 +1,66 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useFetch } from "../../hooks/useFetch";
+import { useValidToken } from "../../hooks/useValidToken";
 
 export default function SingleCard({ user, onBack }) {
-  const dataTest = [
-    {
-      id: 1,
-      name: "Kurwa Męska Koszulka",
-      description: "Bawełniana koszulka z mega wygodnego materiału, rozmiar L",
-      quantityInStock: 25,
-      createdAt: "2025-05-20T15:10:00.000Z",
-      price: 59.99,
-      sku: "KMK-L-001",
-      productImages: [
-        {
-          id: 101,
-          productId: 1,
-          imagePath: "/images/products/koszulka1.jpg",
+  const dataTest = []
+
+  const { doFetch: DeleteSingleUser } = useFetch();
+  const { doFetch: GiveRoleToSingleUser } = useFetch();
+  const { data, isPending, doFetch: getHistory } = useFetch();
+  const { getToken } = useValidToken();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = await getToken();
+      if (!token) return;
+
+      getHistory(`/user/${user.id}/order`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      ],
-    },
-    {
-      id: 2,
-      name: "Spodnie Dresowe",
-      description: "Ciepłe spodnie dresowe na zimę, rozmiar M",
-      quantityInStock: 10,
-      createdAt: "2025-04-15T11:45:00.000Z",
-      price: 129.5,
-      sku: "SD-M-007",
-      productImages: [
-        {
-          id: 102,
-          productId: 2,
-          imagePath: "/images/products/spodnie1.jpg",
-        },
-      ],
-    },
-    {
-      id: 3,
-      name: "Buty Sportowe",
-      description: "Wygodne buty do biegania, czarne, rozmiar 42",
-      quantityInStock: 5,
-      createdAt: "2025-03-05T09:30:00.000Z",
-      price: 299.99,
-      sku: "BS-42-099",
-      productImages: [
-        {
-          id: 103,
-          productId: 3,
-          imagePath: "/images/products/buty1.jpg",
-        },
-      ],
-    },
-    {
-      id: 4,
-      name: "Buty Sportowe",
-      description: "Wygodne buty do biegania, czarne, rozmiar 42",
-      quantityInStock: 5,
-      createdAt: "2025-03-05T09:30:00.000Z",
-      price: 299.99,
-      sku: "BS-42-099",
-      productImages: [
-        {
-          id: 103,
-          productId: 3,
-          imagePath: "/images/products/buty1.jpg",
-        },
-      ],
-    },
-    {
-      id: 5,
-      name: "Buty Sportowe",
-      description: "Wygodne buty do biegania, czarne, rozmiar 42",
-      quantityInStock: 5,
-      createdAt: "2025-03-05T09:30:00.000Z",
-      price: 299.99,
-      sku: "BS-42-099",
-      productImages: [
-        {
-          id: 103,
-          productId: 3,
-          imagePath: "/images/products/buty1.jpg",
-        },
-      ],
-    },
-    {
-      id: 6,
-      name: "Buty Sportowe",
-      description: "Wygodne buty do biegania, czarne, rozmiar 42",
-      quantityInStock: 5,
-      createdAt: "2025-03-05T09:30:00.000Z",
-      price: 299.99,
-      sku: "BS-42-099",
-      productImages: [
-        {
-          id: 103,
-          productId: 3,
-          imagePath: "/images/products/buty1.jpg",
-        },
-      ],
-    },
-  ];
+      });
+    };
+
+    fetchData();
+  }, [user.id]); // dodaj zależności!
+
+
+  const DeleteUser = async () => {
+    const token = await getToken();
+    if (!token) return;
+    DeleteSingleUser(`/user/${user.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
+
+  const GiveRole = async (user) => {
+    const token = await getToken();
+    if (!token) return;
+
+    const isAdmin = user.scopes.some(scope => scope.value === 'admin');
+
+    const scopes = isAdmin
+      ? user.scopes.filter(scope => scope.value !== 'admin')
+      : [...user.scopes, { id: 1, value: 'admin' }];
+
+    console.log(scopes);
+
+    GiveRoleToSingleUser(`/user/${user.id}/scope`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ scopes })
+    });
+  };
   return (
-    <div className="flex h-[80vh] w-[70vw] flex-col gap-6 rounded-xl text-xl text-black">
+    <div className="flex h-[80vh] w-[70vw] flex-col gap-6 rounded-xl justify-between text-xl text-black">
       <button onClick={onBack} className="absolute top-4 left-4 scale-70">
         <img src="/icons/arrow.svg" alt="arrow" />
       </button>
@@ -125,26 +85,35 @@ export default function SingleCard({ user, onBack }) {
           </div>
         )}
         <div className="m-5 flex justify-center gap-15 p-5">
-          <button className="text-md rounded border-3 border-slate-700 bg-white p-3 pr-6 pl-6 text-slate-700 shadow-xl transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125">
+          <button onClick={() => GiveRole(user)} className="text-md rounded border-3 border-slate-700 bg-white p-3 pr-6 pl-6 text-slate-700 shadow-xl transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125">
             Nadaj role{" "}
             {user?.scopes?.some((scope) => scope.value === "admin")
               ? "usera"
               : "admina"}
           </button>
-          <button className="text-md rounded border-3 border-slate-700 bg-white p-3 pr-6 pl-6 text-slate-700 shadow-xl transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125">
+          <button onClick={() => DeleteUser()} className="text-md rounded border-3 border-slate-700 bg-white p-3 pr-6 pl-6 text-slate-700 shadow-xl transition-all duration-300 hover:scale-110 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-125">
             Usuń urzytkownika
           </button>
         </div>
         <p className="p-2 text-2xl font-bold text-slate-700">
           Historia Zakupów:
         </p>
-        {dataTest.length === 0 ? (
+        {isPending && <div
+          style={{
+            scrollbarWidth: "none", // firefox
+            msOverflowStyle: "none", // IE and Edge
+          }}
+          className="h-60 max-h-60 overflow-auto flex justify-center items-center rounded-md border border-2 border-slate-700 p-4"
+        >
+          <p>Loading..</p>
+        </div>}
+        {data && data.length === 0 ? (
           <div
             style={{
               scrollbarWidth: "none", // firefox
               msOverflowStyle: "none", // IE and Edge
             }}
-            className="h-150 max-h-120 overflow-auto flex justify-center items-center rounded-md border border-2 border-slate-700 p-4"
+            className="h-60 max-h-60 overflow-auto flex justify-center items-center rounded-md border border-2 border-slate-700 p-4"
           >
             <p>historia zakupów pusta</p>
           </div>
@@ -154,9 +123,9 @@ export default function SingleCard({ user, onBack }) {
               scrollbarWidth: "none", // firefox
               msOverflowStyle: "none", // IE and Edge
             }}
-            className="h-full max-h-120 overflow-auto rounded-md border border-2 border-slate-700 p-4"
+            className="h-60 max-h-60 overflow-auto rounded-md border border-2 border-slate-700 p-4"
           >
-            {dataTest.map((item) => (
+            {data && data.orderItems.map((item) => (
               <div
                 key={item.id}
                 className="mb-4 flex gap-4 border-b border-slate-300 pb-4 last:mb-0 last:border-b-0"
