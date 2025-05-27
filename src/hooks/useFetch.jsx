@@ -1,6 +1,9 @@
 import { useState, useCallback } from "react";
+import useAxios from "./useAxios";
+import axiosLib from "axios"; // 👈 dodaj to
 
 export const useFetch = (defaultUrl = null, defaultOptions = {}, manual = false) => {
+  const axios = useAxios();
   const [data, setData] = useState(null);
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState(null);
@@ -11,44 +14,32 @@ export const useFetch = (defaultUrl = null, defaultOptions = {}, manual = false)
     setIsPending(true);
     setError(null);
 
-    const fetchOptions = {
-      method: customOptions.method || defaultOptions.method || "GET",
-      headers: {
-        "Content-Type": "application/json",
-        ...(customOptions.headers || defaultOptions.headers || {}),
-      },
-      signal: (new AbortController()).signal,
-    };
-
-    if (customOptions.body) {
-      fetchOptions.body = JSON.stringify(customOptions.body);
-    }
-
     try {
-      const res = await fetch(url, fetchOptions);
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const method = customOptions.method || defaultOptions.method || "GET";
+      const headers = {
+        "Content-Type": "application/json",
+        ...(defaultOptions.headers || {}),
+        ...(customOptions.headers || {}),
+      };
 
-      const text = await res.text();
-      const parsedData = text ? JSON.parse(text) : null;
+      const response = await axios({
+        url,
+        method,
+        headers,
+        data: customOptions.body || defaultOptions.body || undefined,
+      });
 
-      setData(parsedData);
-      setIsPending(false);
-      return parsedData;
+      setData(response.data);
+      return response.data;
     } catch (err) {
-      if (err.name !== "AbortError") {
-        setError(err.message);
+      if (!axiosLib.isCancel(err)) {
+        setError(err?.response?.data?.message || err.message);
       }
-      setIsPending(false);
       return null;
+    } finally {
+      setIsPending(false);
     }
-  }, [defaultUrl, defaultOptions.method, defaultOptions.headers]);
-
-  // Jeśli manual = false i jest url, to fetchuj od razu (nie musisz tego robić, ale możesz)
-  // useEffect(() => {
-  //   if (!manual && defaultUrl) {
-  //     doFetch(defaultUrl, defaultOptions);
-  //   }
-  // }, [defaultUrl, defaultOptions, manual, doFetch]);
+  }, [axios, defaultUrl, defaultOptions]);
 
   return { data, isPending, error, doFetch };
 };

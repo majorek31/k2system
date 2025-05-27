@@ -24,8 +24,9 @@ import { useUserInfo } from "./hooks/useContext/useUserInfo";
 
 function App() {
   const boxRef = useRef(null);
-  const {showLogInfo, setShowLogInfo, showLogOutInfo, setShowLogOutInfo } = useUserInfo();
+  const { showLogInfo, setShowLogInfo, showLogOutInfo, setShowLogOutInfo } = useUserInfo();
   const [showNavBar, setShowNavBar] = useState(false);
+
 
   return (
     <div ref={boxRef} className="overflow-hidden scroll-smooth">

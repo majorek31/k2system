@@ -257,7 +257,7 @@ export default function AddProductForm({onProductAdded}) {
   };
 
   return (
-    <form onSubmit={sendData} className="max-h-[90vh] w-[65vw] overflow-auto">
+    <form onSubmit={sendData} className="max-h-[90vh] w-[65vw] overflow-auto overflow-x-hidden">
       <div className="flex h-[90vh] flex-col justify-between">
         <h1 className="text-leftr p-5 text-5xl font-bold text-slate-700">
           Dodaj produkt !

@@ -27,7 +27,7 @@ export default function ShopPage() {
 
 
   useEffect(() => {
-    doFetch("http://localhost:5000/product", {
+    doFetch("/product", {
       method: "GET",
     });
   }, [refreshTrigger]);
