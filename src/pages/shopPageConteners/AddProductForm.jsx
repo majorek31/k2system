@@ -6,8 +6,9 @@ import { AnimatePresence } from "framer-motion";
 import { useFetch } from "../../hooks/useFetch";
 import { useValidToken } from "../../hooks/useValidToken";
 import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick";
+import { useShowError } from "../../hooks/useContext/useShowError";
 
-export default function AddProductForm({ onProductAdded }) {
+export default function AddProductForm({ onProductAdded, setShowProductForm }) {
   const [nameVal, setNameVal] = useState("");
   const [msgNameVal, setMsgNameVal] = useState("");
 
@@ -34,14 +35,11 @@ export default function AddProductForm({ onProductAdded }) {
   const [editorVal, setEditorVal] = useState("");
   const [msgEditorVal, setMsgEditorVal] = useState("");
 
-  const [showFinalInormationContainer, setShowFinalInormationContainer] =
-    useState("");
-  const [showErrorContainer, setShowErrorContainer] = useState("");
-
   const noHtmlCharsRegEx = /^[^<>&"'`]*$/;
   const noExtraSpacesRegEx = /^\S+(?: \S+)*$/;
   const { doFetch: addProduct } = useFetch();
   const { getToken } = useValidToken();
+  const { isError, setIsError, errorContent, setErrorContent } = useShowError();
 
   const stripHtml = (html) => {
     const div = document.createElement("div");
@@ -181,11 +179,7 @@ export default function AddProductForm({ onProductAdded }) {
       ? ""
       : "Opis nie może zawierać znaków HTML (np. <, >, &, \", '). ";
 
-    const msg3 = noExtraSpacesRegEx.test(textOnly)
-      ? ""
-      : "Opis nie może zaczynać się lub kończyć spacją. ";
-
-    setMsgEditorVal(msg1 + msg2 + msg3);
+    setMsgEditorVal(msg1 + msg2);
   };
 
   useEffect(() => {
@@ -194,7 +188,6 @@ export default function AddProductForm({ onProductAdded }) {
       return;
     }
     checkRegExName(nameVal);
-    console.log(msgNameVal);
   }, [nameVal]);
 
   useEffect(() => {
@@ -277,8 +270,9 @@ export default function AddProductForm({ onProductAdded }) {
         imageUrls: imageUrls,
       };
 
-      setShowFinalInormationContainer(true);
-      setShowErrorContainer(false);
+      setIsError(true);
+      setErrorContent("Produkt został dodany poprawnie");
+      setShowProductForm(false);
 
       if (onProductAdded) onProductAdded();
 
@@ -289,22 +283,29 @@ export default function AddProductForm({ onProductAdded }) {
         },
         body: data,
       });
-      console.log("dane zostały wysłane");
     } else {
-      setShowErrorContainer(true);
-      setShowFinalInormationContainer(false);
+      checkRegExName(nameVal);
+      checkRegExSku(skuVal);
+      checkRegExQuantity(quantityInStock);
+      checkRegExPrice(price);
+      checkRegExImageUrl(imageUrl);
+      checkRegExEditorVal(editorVal);
+      checkRegExBrand(brand);
     }
   };
 
   return (
-    <form onSubmit={sendData} className="max-h-[90vh] w-[75vw] overflow-auto overflow-x-hidden">
+    <form
+      onSubmit={sendData}
+      className="max-h-[90vh] w-[75vw] overflow-auto overflow-x-hidden"
+    >
       <div className="flex h-[90vh] flex-col justify-between">
         <h1 className="text-leftr p-5 text-5xl font-bold text-slate-700">
           Dodaj produkt !
         </h1>
 
         <div className="flex flex-col items-center justify-center p-5 lg:flex-row lg:justify-between">
-          <div className="flex flex-col justify-between p-5 h-full">
+          <div className="flex h-full flex-col justify-between p-5">
             <Input
               val={nameVal}
               msg={msgNameVal}
@@ -329,10 +330,7 @@ export default function AddProductForm({ onProductAdded }) {
             </Input>
           </div>
 
-          <div className="flex flex-col justify-between p-5 h-full">
-            <Input val={price} msg={msgPrice} setVal={setPrice} type="number">
-              Cena
-            </Input>
+          <div className="flex h-full flex-col justify-between p-5">
             <Input val={brand} msg={msgBrand} setVal={setBrand} type="text">
               Marka
             </Input>
@@ -363,74 +361,68 @@ export default function AddProductForm({ onProductAdded }) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-5 p-5 text-center h-full">
+          <div className="flex h-full flex-col gap-5 p-5 text-center">
             <h1>Dodane obrazy:</h1>
-            <div className="flex h-70 max-h-100 w-fit  flex-col gap-5 overflow-auto">
+            <div className="flex h-70 max-h-100 w-fit flex-col gap-5 overflow-auto">
               {imageUrls.length === 0
                 ? "brak urlów"
                 : imageUrls.map((el, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between gap-3"
-                  >
-                    <p>{el.substring(0, 10) + "..."}</p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setImageUrls(
-                          imageUrls.filter((_, index) => index !== i),
-                        );
-                        setMsgImageUrls("");
-                      }}
-                      className="rounded bg-slate-700 px-2 py-1 text-white transition hover:bg-red-800"
+                    <div
+                      key={i}
+                      className="flex items-center justify-between gap-3"
                     >
-                      Usuń
-                    </button>
-                  </div>
-                ))}
+                      <p>{el.substring(0, 10) + "..."}</p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImageUrls(
+                            imageUrls.filter((_, index) => index !== i),
+                          );
+                          setMsgImageUrls("");
+                        }}
+                        className="rounded bg-slate-700 px-2 py-1 text-white transition hover:bg-red-800"
+                      >
+                        Usuń
+                      </button>
+                    </div>
+                  ))}
             </div>
           </div>
-          <div className="flex flex-col p-5 text-center justify-between items-left h-full">
+          <div className="items-left flex h-full flex-col justify-between p-5 text-center">
             <h1>Rodzaj produktu:</h1>
             <Radio
               name="manufacturer"
               value="Drukarka"
               checked={selectedType === "Drukarka"}
               onChange={() => setSelectedType("Drukarka")}
-              onClick={() => (setVisible(true))}
+              onClick={() => setVisible(true)}
             >
-              <p className="text-lg">
-                Drukarka
-              </p>
+              <p className="text-lg">Drukarka</p>
             </Radio>
             <Radio
               name="manufacturer"
               value="Kserokopiarka"
               checked={selectedType === "Kserokopiarka"}
               onChange={() => setSelectedType("Kserokopiarka")}
-              onClick={() => (setVisible(true))}
+              onClick={() => setVisible(true)}
             >
-              <p className="text-lg">
-                Kserokopiarka 
-              </p>
+              <p className="text-lg">Kserokopiarka</p>
             </Radio>
             <Radio
               name="manufacturer"
               value="kopiarka"
               checked={selectedType === "kopiarka"}
               onChange={() => setSelectedType("kopiarka")}
-              onClick={() => (setVisible(true))}
+              onClick={() => setVisible(true)}
             >
-              <p className="text-lg">
-                kopiarka
-              </p>
+              <p className="text-lg">kopiarka</p>
             </Radio>
             <Radio
               name="manufacturer"
               value="DrukarkaWielofunkcyjna"
               checked={selectedType === "DrukarkaWielofunkcyjna"}
               onChange={() => setSelectedType("DrukarkaWielofunkcyjna")}
-              onClick={() => (setVisible(true))}
+              onClick={() => setVisible(true)}
             >
               <p className="text-lg whitespace-nowrap">
                 Drukarka Wielofunkcyjna
@@ -447,7 +439,8 @@ export default function AddProductForm({ onProductAdded }) {
               menubar: false,
               width: "100%",
               height: 500,
-              plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount",
+              plugins:
+                "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount",
               toolbar:
                 "undo redo | formatselect | bold italic backcolor | " +
                 "alignleft aligncenter alignright alignjustify | " +
@@ -455,7 +448,6 @@ export default function AddProductForm({ onProductAdded }) {
             }}
             onEditorChange={(content) => setEditorVal(content)}
           />
-
 
           {msgEditorVal ? (
             <p className="mt-2 text-sm text-red-600">{msgEditorVal}</p>
@@ -466,34 +458,11 @@ export default function AddProductForm({ onProductAdded }) {
 
         <button
           type="submit"
-          className="mt-5 rounded border-3 border-slate-700 bg-white p-5 pr-10 pl-10 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-120 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-140"
+          className="m-40 mt-0 mb-10 rounded border-3 border-slate-700 bg-white p-5 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-120 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-140"
         >
           Dodaj produkt
         </button>
       </div>
-
-      <AnimatePresence>
-        {showFinalInormationContainer && (
-          <AnimatedDetailOnClick
-            setActiveModal={setShowFinalInormationContainer}
-          >
-            <div className="z-[100] m-3 flex w-[33vh] flex-col gap-7 p-3 select-none lg:w-[105]">
-              <h1 className="text-center text-3xl font-bold">
-                Dane zostały dodane
-              </h1>
-            </div>
-          </AnimatedDetailOnClick>
-        )}
-        {showErrorContainer && (
-          <AnimatedDetailOnClick setActiveModal={setShowErrorContainer}>
-            <div className="z-[100] m-3 flex w-[33vh] flex-col gap-7 p-3 select-none lg:w-[105]">
-              <h1 className="text-center text-3xl font-bold">
-                Nie wypełniłeś danych poprawnie lub podałeś błedne dane
-              </h1>
-            </div>
-          </AnimatedDetailOnClick>
-        )}
-      </AnimatePresence>
     </form>
   );
 }

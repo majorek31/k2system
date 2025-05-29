@@ -48,7 +48,6 @@ export default function SingleCard({ user, onBack }) {
       ? user.scopes.filter(scope => scope.value !== 'admin')
       : [...user.scopes, { id: 1, value: 'admin' }];
 
-    console.log(scopes);
 
     GiveRoleToSingleUser(`/user/${user.id}/scope`, {
       method: "PATCH",
@@ -59,6 +58,7 @@ export default function SingleCard({ user, onBack }) {
       body: JSON.stringify({ scopes })
     });
   };
+
   return (
     <div className="flex h-[80vh] w-[70vw] flex-col gap-6 rounded-xl justify-between text-xl text-black">
       <button onClick={onBack} className="absolute top-4 left-4 scale-70">

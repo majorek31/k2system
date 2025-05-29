@@ -8,9 +8,24 @@ export function ShopProvider({ children }) {
   const [productsForOdrder, setProductsForOdrder] = useState([]);
   const [showContentForShoppingList, setShowContentForShoppingList] =
     useState(false);
+  const [showOrderContainer, setShowOrderContainer] = useState(false);
+  const [selectedFilterType, setSelectedFilterType] = useState("all");
 
   return (
-    <ShopContext.Provider value={{ showProductForm, setShowProductForm, productsForOdrder, setProductsForOdrder, showContentForShoppingList, setShowContentForShoppingList }}>
+    <ShopContext.Provider
+      value={{
+        showProductForm,
+        setShowProductForm,
+        productsForOdrder,
+        setProductsForOdrder,
+        showContentForShoppingList,
+        setShowContentForShoppingList,
+        showOrderContainer,
+        setShowOrderContainer,
+        selectedFilterType,
+        setSelectedFilterType,
+      }}
+    >
       {children}
     </ShopContext.Provider>
   );

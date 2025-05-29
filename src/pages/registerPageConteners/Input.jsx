@@ -26,6 +26,7 @@ export default function Input({ children, val, setVal, msg, type }) {
       <input
         id={`${children}`}
         name={`${children}`}
+        value={val}
         onChange={(e) => setVal(e.target.value)}
         type={type}
         className={`peer border-b bg-inherit py-1 font-bold transition-colors focus:border-b-2 focus:outline-none ${
@@ -44,13 +45,19 @@ export default function Input({ children, val, setVal, msg, type }) {
         onMouseLeave={cancelPress}
       >
         {children}
-        {msg?.length > 0 ? <span className="text-xs"> - przytrzymaj</span> : <span></span>}
+        {msg?.length > 0 ? (
+          <span className="text-xs"> - przytrzymaj</span>
+        ) : (
+          <span></span>
+        )}
       </label>
       <AnimatePresence>
         {showWhatsWrong && msg?.length > 0 && (
           <AnimatedDetailOnClick setActiveModal={setShowWhatsWrong}>
-            <div className="z-[1002] m-3 flex w-[33vh] flex-col gap-7 p-3 select-none lg:w-[105px]">
-              <h1 className="text-center text-3xl font-bold">{children} - warunki</h1>
+            <div className="z-[1002] m-3 flex w-120 flex-col gap-7 p-3 select-none">
+              <h1 className="text-center text-3xl font-bold">
+                {children} - warunki
+              </h1>
               <div className="flex flex-col gap-5 lg:flex-row">
                 <div className="text-justify">
                   {msg.split(":").map((part, index, arr) => (

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SingleItem from "./SingleItem";
 import SingleItemDetail from "./SingleItemDetail";
 import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick"; // Upewnij się, że ścieżka jest poprawna
+import { AnimatePresence } from "framer-motion";
 
 export default function ItemsContener({ data, isPending, onProductDeleted }) {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -25,16 +26,17 @@ export default function ItemsContener({ data, isPending, onProductDeleted }) {
           onProductDeleted={onProductDeleted}
         />
       ))}
-
-      {/* animacja wyjscia sie jebie */}
-      {selectedItem && (
-        <AnimatedDetailOnClick setActiveModal={setSelectedItem} >
-          <SingleItemDetail
-            setSelectedItem={setSelectedItem}
-            el={selectedItem}
-          />
-        </AnimatedDetailOnClick>
-      )}
+      
+      <AnimatePresence mode="wait">
+        {selectedItem && (
+          <AnimatedDetailOnClick setActiveModal={setSelectedItem}>
+            <SingleItemDetail
+              setSelectedItem={setSelectedItem}
+              el={selectedItem}
+            />
+          </AnimatedDetailOnClick>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

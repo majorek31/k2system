@@ -1,6 +1,9 @@
 import * as jose from "jose";
+import useAxios from "./useAxios";
 
 export const useValidToken = () => {
+  const axios = useAxios();
+
   const getToken = async () => {
     const loginData = JSON.parse(localStorage.getItem("loginData"));
     const decodedData = JSON.parse(localStorage.getItem("decodedData"));
@@ -9,19 +12,26 @@ export const useValidToken = () => {
     if (!loginData || !decodedData) return null;
 
     if (decodedData.exp < now) {
-        console.log("NOWY TOKEN")
-      const res = await fetch(
-        `/auth/refresh?Token=${encodeURIComponent(loginData.refreshToken)}`,
-      );
-      if (!res.ok) return null;
+      console.log("NOWY TOKEN");
 
-      const json = await res.json();
-      const decoded = jose.decodeJwt(json.accessToken);
+      try {
+        const res = await axios.get("/auth/refresh", {
+          params: { Token: loginData.refreshToken },
+        });
 
-      localStorage.setItem("loginData", JSON.stringify(json));
-      localStorage.setItem("decodedData", JSON.stringify(decoded));
+        if (res.status !== 200) return null;
 
-      return json.accessToken;
+        const json = res.data;
+        const decoded = jose.decodeJwt(json.accessToken);
+
+        localStorage.setItem("loginData", JSON.stringify(json));
+        localStorage.setItem("decodedData", JSON.stringify(decoded));
+
+        return json.accessToken;
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+        return null;
+      }
     }
 
     return loginData.accessToken;

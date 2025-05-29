@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Input from "./Input";
 import Radio from "./Radio";
 import { useFetch } from "../../hooks/useFetch";
+import { useShowError } from "../../hooks/useContext/useShowError";
 import AniamtedOnChangeOpacity from "../../animations/AniamtedOnChangeOpacity";
 import AnimatedDetailOnClick from "../../animations/AnimatedDetailOnClick";
 
@@ -37,11 +38,13 @@ export default function registerForm() {
 
   const [visible, setVisible] = useState(true);
 
-  const { doFetch: loginFetch } = useFetch(
+  const { error, doFetch: loginFetch } = useFetch(
     null,
     { method: "POST" },
     true,
   );
+
+  const { setIsError, setErrorContent } = useShowError();
 
   const checkRegExNip = (val) => {
     val = val.trim();
@@ -75,7 +78,6 @@ export default function registerForm() {
       : "Nazwa firmy nie może zawierać znaków HTML (np. <, >, &, \", '): ";
     setMsgFirmaNazwa(msg1 + msg2);
   };
-
 
   const checkRegExFirstName = (val) => {
     val = val.trim();
@@ -195,8 +197,8 @@ export default function registerForm() {
     val === val2 && val !== ""
       ? setMsgPasswordDoubleCheck("")
       : setMsgPasswordDoubleCheck(
-        "Podane hasło różńi się od wcześniej podanego hasła",
-      );
+          "Podane hasło różńi się od wcześniej podanego hasła",
+        );
     console.log(msgPasswrodDoubleCheck);
   };
 
@@ -214,28 +216,21 @@ export default function registerForm() {
       passwordDoubleCheck !== ""
     ) {
       const data = {
-        "email": emailVal,
-        "firstName": firstName,
-        "lastName": lastName,
-        "password": password,
-        "userType": "personal",
-        "vatNumber": null,
-        "companyName": null
-      }
+        email: emailVal,
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
+        userType: "personal",
+        vatNumber: null,
+        companyName: null,
+      };
       console.log(data);
-      setShowFinalInormationContainer(true);
-      setShowErrorContainer(false);
-
       loginFetch("/auth/register", {
         method: "POST",
         body: data,
       });
-      console.log("konto załozone")
-    } else {
-      setShowErrorContainer(true);
-      setShowFinalInormationContainer(false);
     }
-  }
+  };
   const sendDataC = () => {
     if (
       msgFirstName === "" &&
@@ -254,31 +249,36 @@ export default function registerForm() {
       msgFirmaNazwa === ""
     ) {
       const data = {
-        "email": emailVal,
-        "firstName": firstName,
-        "lastName": lastName,
-        "password": password,
-        "userType": "company",
-        "vatNumber": nip,
-        "companyName": firmaNazwa
-      }
-      console.log(data);
-      setShowFinalInormationContainer(true);
-      setShowErrorContainer(false);
+        email: emailVal,
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
+        userType: "company",
+        vatNumber: nip,
+        companyName: firmaNazwa,
+      };
 
       loginFetch("/auth/register", {
         method: "POST",
         body: data,
       });
-      console.log("konto załozone")
-    } else {
-      setShowErrorContainer(true);
-      setShowFinalInormationContainer(false);
     }
   };
 
   useEffect(() => {
-    console.log(firstName);
+    if (error === null) {
+      return;
+    }
+    if (error) {
+      setIsError(true);
+      setErrorContent(error[0]?.errorMessage || "Sraka");
+    } else {
+      setIsError(true);
+      setErrorContent("konto zostało założone");
+    }
+  }, [error]);
+
+  useEffect(() => {
     if (firstName === "") {
       return;
     }
@@ -301,7 +301,6 @@ export default function registerForm() {
     if (firmaNazwa === "") return;
     checkRegExFirmaNazwa(firmaNazwa);
   }, [firmaNazwa]);
-
 
   useEffect(() => {
     if (emailVal === "") {
@@ -327,7 +326,9 @@ export default function registerForm() {
   return (
     <form
       className="m-5 flex flex-col items-center justify-center gap-15 p-5"
-      onSubmit={(e) => (e.preventDefault(), selectedType === "osoba" ? sendDataP() : sendDataC())}
+      onSubmit={(e) => (
+        e.preventDefault(), selectedType === "osoba" ? sendDataP() : sendDataC()
+      )}
     >
       <div className="flex gap-15">
         <Radio
@@ -335,7 +336,7 @@ export default function registerForm() {
           value="osoba"
           checked={selectedType === "osoba"}
           onChange={() => setSelectedType("osoba")}
-          onClick={() => (setVisible(true))}
+          onClick={() => setVisible(true)}
         >
           Konto Osobiste
         </Radio>
@@ -344,7 +345,7 @@ export default function registerForm() {
           value="firma"
           checked={selectedType === "firma"}
           onChange={() => setSelectedType("firma")}
-          onClick={() => (setVisible(true))}
+          onClick={() => setVisible(true)}
         >
           Konto Firmowe
         </Radio>
@@ -352,9 +353,9 @@ export default function registerForm() {
 
       {selectedType === "osoba" && (
         <AniamtedOnChangeOpacity isVisible={visible}>
-          <div className="flex flex-col lg:flex-row gap-4 min-h-[70vh] lg:min-h-[50vh] max-h-[700px]">
+          <div className="flex max-h-[700px] min-h-[70vh] flex-col gap-4 lg:min-h-[50vh] lg:flex-row">
             {/* Kolumna 1 */}
-            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
+            <div className="m-5 flex flex-1 flex-col items-center justify-center gap-12 p-5">
               <Input
                 val={firstName}
                 msg={msgFirstName}
@@ -374,8 +375,13 @@ export default function registerForm() {
             </div>
 
             {/* Kolumna 2 */}
-            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
-              <Input val={emailVal} msg={msgEmail} setVal={setEmailVal} type="text">
+            <div className="m-5 flex flex-1 flex-col items-center justify-center gap-12 p-5">
+              <Input
+                val={emailVal}
+                msg={msgEmail}
+                setVal={setEmailVal}
+                type="text"
+              >
                 email
               </Input>
               <Input
@@ -401,9 +407,9 @@ export default function registerForm() {
 
       {selectedType === "firma" && (
         <AniamtedOnChangeOpacity isVisible={visible}>
-          <div className="flex flex-col lg:flex-row gap-4 min-h-[50vh] max-h-[700px]">
+          <div className="flex max-h-[700px] min-h-[50vh] flex-col gap-4 lg:flex-row">
             {/* Kolumna 1 */}
-            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
+            <div className="m-5 flex flex-1 flex-col items-center justify-center gap-12 p-5">
               <Input
                 val={firstName}
                 msg={msgFirstName}
@@ -420,13 +426,18 @@ export default function registerForm() {
               >
                 nazwisko
               </Input>
-              <Input val={emailVal} msg={msgEmail} setVal={setEmailVal} type="text">
+              <Input
+                val={emailVal}
+                msg={msgEmail}
+                setVal={setEmailVal}
+                type="text"
+              >
                 email
               </Input>
             </div>
 
             {/* Kolumna 2 */}
-            <div className="flex-1 m-5 flex flex-col items-center justify-center gap-12 p-5">
+            <div className="m-5 flex flex-1 flex-col items-center justify-center gap-12 p-5">
               <Input val={nip} msg={msgNip} setVal={setNip} type="text">
                 NIP
               </Input>
@@ -459,11 +470,9 @@ export default function registerForm() {
         </AniamtedOnChangeOpacity>
       )}
 
-
       <button
         type="submit"
         className="m-5 rounded border-3 border-slate-700 bg-white p-5 pr-10 pl-10 text-xl text-slate-700 shadow-xl transition-all duration-300 hover:scale-120 hover:cursor-pointer hover:bg-slate-700 hover:text-white active:scale-140"
-
       >
         Register
       </button>
@@ -489,6 +498,6 @@ export default function registerForm() {
           </AnimatedDetailOnClick>
         )}
       </AnimatePresence>
-    </form >
+    </form>
   );
 }

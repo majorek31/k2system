@@ -2,9 +2,9 @@ import React from "react";
 
 export default function Radio({ id, name, children, checked, onChange,onClick }) {
     return (
-        <div className="inline-flex items-center">
+        <div className="inline-flex justify-between items-center">
             <label
-                className="relative flex cursor-pointer items-center rounded-full p-3"
+                className="relative flex jus cursor-pointer items-center rounded-full p-3"
                 htmlFor={id}
                 data-ripple-dark="true"
             >

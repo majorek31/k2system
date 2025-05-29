@@ -7,6 +7,7 @@ import { useUserInfo } from "../hooks/useContext/useUserInfo";
 import { useAnimation } from "../hooks/useContext/useAnimation";
 import { useLocation } from "react-router-dom";
 import { useShopInfo } from "../hooks/useContext/useShopInfo";
+import { useShowError } from "../hooks/useContext/useShowError";
 
 import { AnimatePresence } from "framer-motion";
 import AnimatedDetailOnClick from "../animations/AnimatedDetailOnClick";
@@ -18,22 +19,29 @@ import ShoppingList from "./NavBarConteners/ShoppingList";
 import LanguageContainer from "./NavBarConteners/LanguageContainer";
 import UserList from "./NavBarConteners/UserList";
 import FilterList from "./NavBarConteners/FilterList";
+import AddOrderContainer from "../pages/orderPageContainers/AddOrderContainer";
+import OrderContainer from "../pages/orderPageContainers/OrderContainer";
 
 export default function NavBar({ showNavBar, setShowNavBar }) {
-  const [showInfo, setShowInfo] = useState(false);
-  const [info, setInfo] = useState("");
+  const [showOrders, setShowOrders] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showContentForNav, setShowContentForNav] = useState(false);
   const [showContentForLanguageContainer, setShowContentForLanguageContainer] =
     useState(false);
   const [showContentForAccountDetails, setShowContentForAccountDetails] =
     useState(false);
-  const [showFilterList, setShowFilterList] =
-    useState(false);
+  const [showFilterList, setShowFilterList] = useState(false);
   const { scrollY, height } = useAnimation();
   const { bGcolor } = useTheme();
   const { isAdmin } = useUserInfo();
-  const { setShowProductForm,showContentForShoppingList,setShowContentForShoppingList } = useShopInfo();
+  const {
+    setShowProductForm,
+    showContentForShoppingList,
+    setShowContentForShoppingList,
+    setShowOrderContainer,
+    showOrderContainer,
+  } = useShopInfo();
+  const { isError, setIsError, errorContent, setErrorContent } = useShowError();
 
   // check if navbar schould be visible
 
@@ -42,6 +50,7 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
       setShowContentForNav(false),
       setShowContentForAccountDetails(false),
       setShowContentForShoppingList(false);
+    setShowFilterList(false);
   }, [scrollY, height]);
 
   function handleToggleWithDelay({
@@ -66,12 +75,12 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
   }
 
   useEffect(() => {
-    if (showUsers) {
+    if (showUsers || showOrderContainer || showOrders) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
-  }, [showUsers]);
+  }, [showUsers, showOrderContainer,showOrders]);
 
   const location = useLocation();
 
@@ -98,11 +107,13 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
                     setShowContentForShoppingList,
                     setShowContentForAccountDetails,
                     setShowContentForLanguageContainer,
+                    setShowFilterList,
                   ],
                   openFlags: [
                     showContentForShoppingList,
                     showContentForAccountDetails,
                     showContentForLanguageContainer,
+                    showFilterList,
                   ],
                 })
               }
@@ -152,11 +163,13 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
                           setShowContentForNav,
                           setShowContentForAccountDetails,
                           setShowContentForLanguageContainer,
+                          setShowFilterList,
                         ],
                         openFlags: [
                           showContentForNav,
                           showContentForAccountDetails,
                           showContentForLanguageContainer,
+                          showFilterList,
                         ],
                       })
                     }
@@ -175,11 +188,13 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
                       setShowContentForNav,
                       setShowContentForShoppingList,
                       setShowContentForAccountDetails,
+                      setShowFilterList,
                     ],
                     openFlags: [
                       showContentForNav,
                       showContentForShoppingList,
                       showContentForAccountDetails,
+                      showFilterList,
                     ],
                   })
                 }
@@ -196,11 +211,13 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
                       setShowContentForNav,
                       setShowContentForShoppingList,
                       setShowContentForLanguageContainer,
+                      setShowFilterList,
                     ],
                     openFlags: [
                       showContentForNav,
                       showContentForShoppingList,
                       showContentForLanguageContainer,
+                      showFilterList,
                     ],
                   })
                 }
@@ -213,13 +230,14 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
           showContentForAccountDetails={showContentForAccountDetails}
           setShowContentForAccountDetails={setShowContentForAccountDetails}
           setShowUsers={setShowUsers}
-          setShowInfo={setShowInfo}
-          setInfo={setInfo}
+          setShowOrders={setShowOrders}
+          setShowInfo={setIsError}
+          setInfo={setErrorContent}
         />
         <LanguageContainer
           showContentForLanguageContainer={showContentForLanguageContainer}
-          setShowInfo={setShowInfo}
-          setInfo={setInfo}
+          setShowInfo={setIsError}
+          setInfo={setErrorContent}
           setShowContentForLanguageContainer={
             setShowContentForLanguageContainer
           }
@@ -227,11 +245,25 @@ export default function NavBar({ showNavBar, setShowNavBar }) {
         <ShoppingList showContentForShoppingList={showContentForShoppingList} />
         <FilterList showFilterList={showFilterList} />
       </div>
-      <UserList showUsers={showUsers} setShowUsers={setShowUsers} />
-      <AnimatePresence>
-        {showInfo && (
-          <AnimatedDetailOnClick setActiveModal={setShowInfo}>
-            {info}
+      <AnimatePresence mode="wait">
+        {showUsers && (
+          <AnimatedDetailOnClick setActiveModal={setShowUsers} key={"userList"}>
+            <UserList />
+          </AnimatedDetailOnClick>
+        )}
+        {showOrders && (
+          <AnimatedDetailOnClick setActiveModal={setShowOrders} key={"orderList"}>
+            <OrderContainer />
+          </AnimatedDetailOnClick>
+        )}
+        {showOrderContainer && (
+          <AnimatedDetailOnClick setActiveModal={setShowOrderContainer} key={"addOrderContainer"}>
+            <AddOrderContainer />
+          </AnimatedDetailOnClick>
+        )}
+        {isError && (
+          <AnimatedDetailOnClick setActiveModal={setIsError} key={"errorContainer"}>
+            {errorContent}
           </AnimatedDetailOnClick>
         )}
       </AnimatePresence>

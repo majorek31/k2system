@@ -1,10 +1,15 @@
 //framer motion
 import { motion } from "framer-motion";
 
-export default function AnimatedDetailOnClick({ children, setActiveModal }) {
+export default function AnimatedDetailOnClick({
+  children,
+  setActiveModal,
+  modalKey,
+}) {
   return (
     <motion.div
-      className="fixed top-0 left-0 h-screen w-screen bg-[rgba(0,0,0,0.5)] z-[100]"
+      key={modalKey}
+      className={`fixed top-0 left-0 z-[100] h-screen w-screen bg-[rgba(0,0,0,0.5)]`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

@@ -4,6 +4,7 @@ import { useFetch } from "../../hooks/useFetch";
 import { useUserInfo } from "../../hooks/useContext/useUserInfo";
 import { useValidToken } from "../../hooks/useValidToken";
 import * as jose from "jose";
+import { useShowError } from "../../hooks/useContext/useShowError";
 
 export default function RegisterForm() {
   const [emailVal, setEmailVal] = useState("");
@@ -12,8 +13,6 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [msgPassword, setMsgPassword] = useState("");
 
-  const [passwordDoubleCheck, setPasswordDoubleCheck] = useState("");
-  const [msgPasswordDoubleCheck, setMsgPasswordDoubleCheck] = useState("");
   const {
     setUserInfo,
     setShowLogInfo,
@@ -22,18 +21,18 @@ export default function RegisterForm() {
     setUserDecodedInfo,
   } = useUserInfo();
   const { getToken } = useValidToken();
+  const { setIsError, setErrorContent } = useShowError();
 
-  const { data: loginData, doFetch: loginFetch } = useFetch(
-    null,
-    { method: "GET" },
-    true,
-  );
+  const {
+    data: loginData,
+    error,
+    doFetch: loginFetch,
+  } = useFetch(null, { method: "GET" }, true);
 
-  const { data: userData, doFetch: userFetch } = useFetch(
-    null,
-    { method: "GET" },
-    true,
-  );
+  const {
+    data: userData,
+    doFetch: userFetch,
+  } = useFetch(null, { method: "GET" }, true);
 
   const login = (email, password) => {
     const url = `/auth/login?email=${email}&password=${password}`;
@@ -123,28 +122,14 @@ export default function RegisterForm() {
     setMsgPassword(msg1 + msg3 + msg4 + msg5);
   };
 
-  const checkRegExPassDoubleCheck = (val, originalVal) => {
-    if (val === originalVal && val !== "") {
-      setMsgPasswordDoubleCheck("");
-    } else {
-      setMsgPasswordDoubleCheck(
-        "Podane hasło różni się od wcześniej podanego hasła",
-      );
-    }
-  };
-
   const sendData = async () => {
     if (
       msgEmail === "" &&
       emailVal !== "" &&
       msgPassword === "" &&
-      password !== "" &&
-      msgPasswordDoubleCheck === "" &&
-      passwordDoubleCheck !== ""
+      password !== "" 
     ) {
       login(emailVal, password);
-    } else {
-      console.log("Nie wypełniłeś danych poprawnie lub masz błędy");
     }
   };
 
@@ -159,9 +144,17 @@ export default function RegisterForm() {
   }, [password]);
 
   useEffect(() => {
-    if (passwordDoubleCheck === "") return;
-    checkRegExPassDoubleCheck(passwordDoubleCheck, password);
-  }, [passwordDoubleCheck, password]);
+    if (error === null) {
+      return;
+    }
+    if (error) {
+      setIsError(true);
+      setErrorContent(error[0]?.errorMessage || "Sraka");
+    } else {
+      setIsError(true);
+      setErrorContent("konto zostało założone");
+    }
+  }, [error]);
 
   return (
     <form
@@ -188,14 +181,6 @@ export default function RegisterForm() {
             type={"password"}
           >
             Hasło
-          </Input>
-          <Input
-            val={passwordDoubleCheck}
-            msg={msgPasswordDoubleCheck}
-            setVal={setPasswordDoubleCheck}
-            type={"password"}
-          >
-            Potwierdź hasło
           </Input>
 
           <button
