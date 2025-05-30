@@ -150,11 +150,11 @@ export default function AddProductForm({ onProductAdded, setShowProductForm }) {
   const checkRegExImageUrl = (val) => {
     val = val.trim();
 
-    const urlRegex = /^https?:\/\/.*\.(jpg|jpeg|png|gif)$/i;
+    // const urlRegex = /^(https?:\/\/|localhost:\d+\/|\/)[\w\-./%]+\.(jpg|jpeg|png|gif)$/i;
 
-    const msg1 = urlRegex.test(val)
-      ? ""
-      : "URL musi być poprawnym linkiem do obrazka (jpg, png, gif). ";
+    // const msg1 = urlRegex.test(val)
+    //   ? ""
+    //   : "URL musi być poprawnym linkiem do obrazka (jpg, png, gif). ";
 
     const msg2 = noHtmlCharsRegEx.test(val)
       ? ""
@@ -164,7 +164,7 @@ export default function AddProductForm({ onProductAdded, setShowProductForm }) {
       ? ""
       : "URL nie może zaczynać się lub kończyć spacją. ";
 
-    setMsgImageUrls(msg1 + msg2 + msg3);
+    setMsgImageUrls( msg2 + msg3);
   };
 
   const checkRegExEditorVal = (val) => {
@@ -367,25 +367,25 @@ export default function AddProductForm({ onProductAdded, setShowProductForm }) {
               {imageUrls.length === 0
                 ? "brak urlów"
                 : imageUrls.map((el, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center justify-between gap-3"
+                  <div
+                    key={i}
+                    className="flex items-center justify-between gap-3"
+                  >
+                    <p>{el.substring(0, 10) + "..."}</p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageUrls(
+                          imageUrls.filter((_, index) => index !== i),
+                        );
+                        setMsgImageUrls("");
+                      }}
+                      className="rounded bg-slate-700 px-2 py-1 text-white transition hover:bg-red-800"
                     >
-                      <p>{el.substring(0, 10) + "..."}</p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setImageUrls(
-                            imageUrls.filter((_, index) => index !== i),
-                          );
-                          setMsgImageUrls("");
-                        }}
-                        className="rounded bg-slate-700 px-2 py-1 text-white transition hover:bg-red-800"
-                      >
-                        Usuń
-                      </button>
-                    </div>
-                  ))}
+                      Usuń
+                    </button>
+                  </div>
+                ))}
             </div>
           </div>
           <div className="items-left flex h-full flex-col justify-between p-5 text-center">

@@ -80,6 +80,14 @@ function NavBarBars({ showContentForNav }) {
       >
         <SingleWord whichOne={"SettingsLink"} whichContent={"NavBar"} />
       </SingleBar>
+      <SingleBar
+        showContentForNav={showContentForNav}
+        v1={"900ms"}
+        v2={"225ms"}
+        where={"/media"}
+      >
+        media - nie ma w bazie
+      </SingleBar>
     </div>
   );
 }

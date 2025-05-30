@@ -17,6 +17,7 @@ import SettingsPage from "./pages/SettingsPage";
 import ShopPage from "./pages/ShopPage";
 import LandingPage from "./components/LandingPage";
 import RatePage from "./pages/RatePage";
+import MediaPage from "./pages/MediaPage";
 
 import AnimationOnNavigate from "./animations/AnimationOnNavigate";
 import { AnimatePresence } from "framer-motion";
@@ -49,6 +50,7 @@ function App() {
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/rateForm" element={<RatePage />} />
+            <Route path="/media" element={<MediaPage/>} />
           </Routes>
         </BrowserRouter>
         <FooterPage />
